@@ -118,10 +118,6 @@ a[href=""] { color: var(--faint); pointer-events: none; text-decoration: line-th
 .portfolio section { padding: 48px 0; border-top: 1px solid rgba(230, 236, 245, 0.08); }
 .portfolio section:first-child { border-top: 0; }
 .portfolio h2 { margin: 0 0 24px; font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cyan); }
-.portfolio h2 .layer-no { display: block; color: var(--faint); font-size: 11px; margin-bottom: 6px; }
-.bp { padding: 24px 0 8px; }
-.bp .mono { color: var(--orange); margin: 0 0 10px; }
-.bp p:last-child { margin: 0; color: var(--faint); max-width: 640px; }
 .portfolio h3 { margin: 0 0 4px; font-size: 18px; }
 .portfolio p { margin: 0; color: var(--faint); }
 .row { display: grid; grid-template-columns: 140px 1fr; gap: 16px; margin-bottom: 28px; }
