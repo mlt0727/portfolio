@@ -42,7 +42,7 @@ const KEYS = [
   [0.31, -295, 0], [0.35, -295, 0],      // hidden layer 1
   [0.40, -365, 0], [0.44, -365, 0],      // hidden layer 2
   [0.50, -435, 14], [0.60, -545, curveY(0.45) + 8], [0.70, -620, curveY(1) + 8], // training curve
-  [0.78, -655, 0], [1.00, -655, 0],      // output layer, then veil
+  [0.80, -655, 0], [1.00, -655, 0],      // output layer: read until 0.90, veil 0.90–1.0 (style.css)
 ];
 const PHASES = [[0.18, '01 Input · diving'], [0.29, '02 Core · projects'], [0.47, '03 Hidden layers · skills'], [0.74, '04 Training · education'], [1.01, '05 Output · experience']];
 
