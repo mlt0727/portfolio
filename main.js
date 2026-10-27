@@ -67,15 +67,15 @@ if (renderer) {
   const pick = () => { const r = Math.random(); return r < 0.74 ? C_CYAN : r < 0.92 ? C_VIO : C_ORA; };
 
   const pointsMat = new THREE.ShaderMaterial({
-    uniforms: { uTime: { value: 0 }, uTwinkle: { value: reduced ? 0 : 1 }, uAlpha: { value: 1 } },
+    uniforms: { uTime: { value: 0 }, uTwinkle: { value: reduced ? 0 : 1 }, uAlpha: { value: 1 }, uMax: { value: 40 } },
     vertexShader: `
       attribute float aSize; varying vec3 vColor; varying float vTw;
-      uniform float uTime, uTwinkle, uAlpha;
+      uniform float uTime, uTwinkle, uAlpha, uMax;
       void main() {
         vColor = color;
         vec4 mv = modelViewMatrix * vec4(position, 1.0);
         vTw = uAlpha * (1.0 - uTwinkle * 0.3 * (0.5 + 0.5 * sin(uTime * 2.0 + position.x * 0.9 + position.y * 1.3 + position.z * 0.4)));
-        gl_PointSize = clamp(aSize * vTw * (260.0 / -mv.z), 0.0, 40.0);
+        gl_PointSize = clamp(aSize * vTw * (260.0 / -mv.z), 0.0, uMax);
         gl_Position = projectionMatrix * mv;
       }`,
     fragmentShader: `
@@ -89,6 +89,7 @@ if (renderer) {
     vertexColors: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
   });
   const coreMat = pointsMat.clone(); // own uAlpha so the core can fade as the camera flies through it
+  const glowMat = pointsMat.clone(); glowMat.uniforms.uMax.value = 130; glowMat.uniforms.uTwinkle.value = 0; // big soft halos
   const mkPoints = (p, c, s, mat = pointsMat) => {
     const g = new THREE.BufferGeometry();
     g.setAttribute('position', new THREE.BufferAttribute(p, 3));
@@ -221,20 +222,22 @@ if (renderer) {
   const apos = new Float32Array(NA * 3), acol = new Float32Array(NA * 3), asize = new Float32Array(NA);
   anchors.forEach((a, i) => { const c = new THREE.Color(LAYERS[a.layer]?.color || '#fff'); acol.set([c.r, c.g, c.b], i * 3); asize[i] = a.size; });
   const anchorPts = mkPoints(apos, acol, asize);
+  // halo behind every anchor node: same positions, ~3.5x the size, dimmer colour; with additive blending it reads as a glow
+  const anchorGlow = mkPoints(apos, acol.map((v) => v * 0.5), asize.map((v) => v * 3.5), glowMat);
   const epos = new Float32Array(edges.length * 6), ecol = new Float32Array(edges.length * 6);
   edges.forEach(([a, b], i) => {
     const ca = a === 0 ? C_WHITE : new THREE.Color(LAYERS[anchors[a].layer].color), cb = new THREE.Color(LAYERS[anchors[b].layer].color);
     ecol.set([ca.r, ca.g, ca.b, cb.r, cb.g, cb.b], i * 6);
   });
-  const edgeLines = mkLines(epos, ecol, 0.3);
+  const edgeLines = mkLines(epos, ecol, 0.4);
   hud.nodes.textContent = String(N + NC + NA);
 
   // signal pulses travelling along network edges
   const pulseEdges = edges.map((e, i) => (e[2] ? i : -1)).filter((i) => i >= 0);
-  const NPULSE = reduced ? 0 : 90;
+  const NPULSE = reduced ? 0 : 180;
   const pulses = Array.from({ length: NPULSE }, () => ({ e: pulseEdges[Math.floor(Math.random() * pulseEdges.length)], t: Math.random(), v: 0.25 + Math.random() * 0.35 }));
   const ppos = new Float32Array(NPULSE * 3), pcol = new Float32Array(NPULSE * 3).map((_, i) => [C_WHITE.r, C_WHITE.g, C_WHITE.b][i % 3]);
-  const pulsePts = mkPoints(ppos, pcol, new Float32Array(NPULSE).fill(3.2));
+  const pulsePts = mkPoints(ppos, pcol, new Float32Array(NPULSE).fill(4.2));
 
   // place anchors for the current aspect ratio and refresh neuron/edge buffers
   const layout = (aspect) => {
@@ -263,6 +266,7 @@ if (renderer) {
     anchors.forEach((a, i) => apos.set([a.x, a.y, a.z], i * 3));
     edges.forEach(([a, b], i) => epos.set([anchors[a].x, anchors[a].y, anchors[a].z, anchors[b].x, anchors[b].y, anchors[b].z], i * 6));
     anchorPts.geometry.attributes.position.needsUpdate = true;
+    anchorGlow.geometry.attributes.position.needsUpdate = true;
     edgeLines.geometry.attributes.position.needsUpdate = true;
   };
 
