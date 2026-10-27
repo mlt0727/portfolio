@@ -115,32 +115,32 @@ a[href=""] { color: var(--faint); pointer-events: none; text-decoration: line-th
 .outro-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.6rem 1.4rem; margin: 1.4rem 0 0; font-size: 0.95rem; }
 .outro .hint { margin-top: 3rem; color: var(--faint); }
 
-/* ---------- backward pass: text in the middle, gradient flow on both sides ---------- */
-.bp {
-  position: relative; background: var(--bg);
-  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 40rem) minmax(0, 1fr); gap: 2rem;
-  max-width: 100rem; margin: 0 auto; padding: 5rem 1.5rem 3rem;
+/* ---------- act 6: the readable page is the backward pass ----------
+   A spine runs down the left edge; each section is one layer with a node on it, and gradient dots
+   fall from the top (output, Experience) through every node to the bottom (input, Contact). */
+.portfolio { position: relative; background: var(--bg); max-width: 60rem; margin: 0 auto; padding: 1.5rem 1.5rem 4rem 5rem; }
+.portfolio section { position: relative; padding: 3rem 0; border-top: 1px solid rgba(230, 236, 245, 0.08); }
+.portfolio section:first-of-type { border-top: 0; }
+.portfolio section::before { /* layer node on the spine, aligned with the heading */
+  content: ""; position: absolute; left: calc(-3.5rem - 0.3rem); top: 3.15rem; width: 0.6rem; height: 0.6rem; border-radius: 50%;
+  background: var(--bg); border: 2px solid rgba(79, 227, 255, 0.5); transition: background 0.4s, box-shadow 0.4s, border-color 0.4s;
 }
-.bp-side { position: relative; min-height: 22rem; }
-.bp-side svg { position: sticky; top: 14vh; width: 100%; height: auto; max-height: 72vh; display: block; }
-.bp-main .eyebrow { color: var(--orange); margin: 0 0 0.75rem; }
-.bp-main h2 { margin: 0 0 1rem; font-size: clamp(1.6rem, 2.6vw, 2.6rem); font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
-.bp-main p { margin: 0 0 1rem; color: var(--faint); }
-.bp-steps { list-style: none; margin: 1.5rem 0 0; padding: 0; display: grid; gap: 0.5rem; }
-.bp-steps li { display: grid; grid-template-columns: 7.5rem 1fr; gap: 1rem; align-items: baseline; padding: 0.6rem 0; border-top: 1px solid rgba(230, 236, 245, 0.08); }
-.bp-steps .mono { color: var(--orange); }
-.bp-steps a { color: var(--fg); font-weight: 600; }
-.bp-steps span:last-child { color: var(--faint); }
-.bp-node { fill: var(--cyan); opacity: 0.9; }
-.bp-edge { stroke: rgba(79, 227, 255, 0.22); stroke-width: 1; fill: none; }
-.bp-pulse { fill: var(--orange); filter: drop-shadow(0 0 4px var(--orange)); }
-.bp-label { fill: rgba(230, 236, 245, 0.45); font: 600 0.55rem ui-monospace, Menlo, Consolas, monospace; letter-spacing: 0.08em; text-transform: uppercase; }
-@media (max-width: 900px) { .bp { grid-template-columns: 1fr; } .bp-side { display: none; } }
-
-/* ---------- act 6 ---------- */
-.portfolio { position: relative; background: var(--bg); max-width: 57.5rem; margin: 0 auto; padding: 1.5rem 1.5rem 4rem; }
-.portfolio section { padding: 3rem 0; border-top: 1px solid rgba(230, 236, 245, 0.08); }
+.portfolio section.active::before { background: var(--orange); border-color: var(--orange); box-shadow: 0 0 16px var(--orange); }
 .portfolio h2 { margin: 0 0 1.5rem; font-size: 0.8125rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cyan); }
+.portfolio h2 .layer-no { display: block; color: var(--orange); font-size: 0.7rem; margin-bottom: 0.4rem; opacity: 0.8; }
+.spine { position: absolute; left: 1.5rem; top: 0; bottom: 3rem; width: 0; }
+.spine-line { position: absolute; left: -0.5px; top: 1.5rem; bottom: 1.5rem; width: 1px; background: linear-gradient(rgba(79, 227, 255, 0), rgba(79, 227, 255, 0.35) 8%, rgba(79, 227, 255, 0.35) 92%, rgba(79, 227, 255, 0)); }
+.spine-end { position: absolute; left: -0.45rem; bottom: 1rem; width: 0.9rem; height: 0.9rem; border-radius: 50%; background: var(--orange); box-shadow: 0 0 22px var(--orange), 0 0 60px rgba(255, 180, 92, 0.35); animation: breathe 2.4s ease-in-out infinite; }
+.spine-cap { position: absolute; left: 50%; transform: translateX(-50%); top: 0; color: var(--faint); white-space: nowrap; }
+.spine-cap-end { top: auto; bottom: -0.4rem; color: var(--orange); }
+.spine-dot {
+  position: absolute; left: calc(var(--size) / -2); top: 1.5rem; width: var(--size); height: var(--size); border-radius: 50%;
+  background: var(--orange); box-shadow: 0 0 8px var(--orange); opacity: 0;
+  animation: fall var(--dur) linear var(--delay) infinite;
+}
+@keyframes fall { 0% { transform: translateY(0); opacity: 0; } 6% { opacity: 1; } 94% { opacity: 1; } 100% { transform: translateY(calc(var(--spine-h, 2000px) - 3rem)); opacity: 0; } }
+@keyframes breathe { 50% { transform: scale(1.25); } }
+@media (max-width: 600px) { .portfolio { padding-left: 1.5rem; } .spine, .portfolio section::before { display: none; } }
 .portfolio h3 { margin: 0 0 0.25rem; font-size: 1.125rem; }
 .portfolio p { margin: 0; color: var(--faint); }
 .row { display: grid; grid-template-columns: 8.75rem 1fr; gap: 1rem; margin-bottom: 1.75rem; }

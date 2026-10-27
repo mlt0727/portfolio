@@ -363,33 +363,26 @@ if (renderer) {
   frame();
 }
 
-// ---------- backward-pass side graphs: small vertical networks, gradient pulses run output → input ----------
-// Plain SVG with animateMotion, so it needs no WebGL and keeps running while the text is read.
-$$('[data-bp-side]').forEach((side, sideIdx) => {
-  const NS = 'http://www.w3.org/2000/svg', W = 160, H = 420, layers = [3, 5, 5, 4, 2];
-  const svg = document.createElementNS(NS, 'svg');
-  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
-  const el = (tag, attrs, parent = svg) => { const n = document.createElementNS(NS, tag); for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v); parent.appendChild(n); return n; };
-  // node positions: input layer at the top, output at the bottom
-  const pos = layers.map((n, li) => Array.from({ length: n }, (_, i) => [W / 2 + (i - (n - 1) / 2) * (W / (n + 1)), 40 + li * ((H - 80) / (layers.length - 1))]));
-  const edges = [];
-  for (let li = 0; li < layers.length - 1; li++) for (const a of pos[li]) for (const b of pos[li + 1]) edges.push([a, b]);
-  edges.forEach(([a, b], i) => el('path', { id: `bp${sideIdx}-${i}`, class: 'bp-edge', d: `M${b[0]} ${b[1]} L${a[0]} ${a[1]}` })); // drawn output → input
-  pos.forEach((layer, li) => layer.forEach(([x, y]) => el('circle', { class: 'bp-node', cx: x, cy: y, r: li === layers.length - 1 ? 4.5 : 3.2 })));
-  el('text', { class: 'bp-label', x: W / 2, y: 18, 'text-anchor': 'middle' }).textContent = 'input';
-  el('text', { class: 'bp-label', x: W / 2, y: H - 10, 'text-anchor': 'middle' }).textContent = 'output · ∂loss';
-  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    // one gradient pulse per edge, staggered, each travelling along its (reversed) edge
-    const paths = svg.querySelectorAll('.bp-edge');
-    paths.forEach((path, i) => {
-      if (i % 2) return; // every other edge is enough
-      const c = el('circle', { class: 'bp-pulse', r: 2 });
-      const m = el('animateMotion', { dur: `${(1.6 + Math.random() * 1.8).toFixed(2)}s`, begin: `${(Math.random() * 3).toFixed(2)}s`, repeatCount: 'indefinite' }, c);
-      el('mpath', { href: `#${path.id}` }, m);
-    });
+// ---------- backward pass spine: light the node of the section in view ----------
+{
+  const secs = $$('.portfolio section');
+  const io = new IntersectionObserver((es) => es.forEach((e) => e.target.classList.toggle('active', e.isIntersecting)), { rootMargin: '-40% 0px -50% 0px' });
+  secs.forEach((sec) => io.observe(sec));
+  // falling gradient dots: a handful, each on its own period and delay
+  const spine = $('.spine');
+  const sizeSpine = () => spine && spine.style.setProperty('--spine-h', spine.offsetHeight + 'px'); // dots fall the full height
+  sizeSpine(); addEventListener('resize', sizeSpine); addEventListener('load', sizeSpine);
+  if (spine && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    for (let i = 0; i < 14; i++) {
+      const d = document.createElement('i');
+      d.className = 'spine-dot';
+      d.style.setProperty('--dur', (7 + Math.random() * 6).toFixed(2) + 's');
+      d.style.setProperty('--delay', (-Math.random() * 13).toFixed(2) + 's');
+      d.style.setProperty('--size', (2 + Math.random() * 3).toFixed(1) + 'px');
+      spine.appendChild(d);
+    }
   }
-  side.appendChild(svg);
-});
+}
 
 // "Skip intro" lands on the name card at the end of the flight (p = 1), not past it
 $('[data-skip]').addEventListener('click', (e) => {
