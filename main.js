@@ -40,8 +40,8 @@ const curveY = (u) => 14 - 24 * (1 - Math.exp(-2.6 * u)); // "training loss" sha
 const KEYS = [
   [0.00, 45, 0],
   [0.18, -193, 0], [0.25, -193, 0],      // projects
-  [0.31, -295, 0], [0.35, -295, 0],      // hidden layer 1
-  [0.40, -365, 0], [0.44, -365, 0],      // hidden layer 2
+  [0.33, -295, 0], [0.36, -295, 0],      // hidden layer 1 (longer approach from the input ring)
+  [0.41, -365, 0], [0.45, -365, 0],      // hidden layer 2
   [0.50, -435, 12], [0.60, -545, curveY(0.45) + 6], [0.70, -620, curveY(1) + 6], // training curve
   [0.80, -655, 0], [1.00, -655, 0],      // output layer: read until 0.90, veil 0.90–1.0 (style.css)
 ];
@@ -304,7 +304,7 @@ if (renderer) {
     sm.x += (mouse.x - sm.x) * 0.05; sm.y += (mouse.y - sm.y) * 0.05;
     spd = lerp(spd, Math.abs(z - lastZ) / Math.max(dt, 1e-3), 0.12); lastZ = z; // smoothed camera speed
     const speed = spd;
-    fov = lerp(fov, 60 + 16 * clamp(speed / 150, 0, 1), 0.1);
+    fov = lerp(fov, 60 + 10 * clamp(speed / 150, 0, 1), 0.1);
     // training chapter: sit a little right of the loss curve and look at a point on it ~50 units ahead,
     // so the curve stays in frame on the left for the whole descent instead of dropping out below
     const w = smooth(((T.z0 + 40) - z) / 60) * (1 - smooth(((T.z1 + 40) - z) / 40)); // out by z1-0, before the output ring fades in
@@ -358,7 +358,8 @@ if (renderer) {
       if (!a.el) continue;
       let vis, sc = 1;
       if (a.layer === 't' && a.title) {
-        vis = w; // the chapter heading stays pinned at the top for the whole descent
+        // heading: pinned at the top; lights up as soon as the curve comes into view, leaves with the chapter
+        vis = smooth(((T.z0 + 95) - z) / 50) * (1 - smooth(((T.z1 + 40) - z) / 40));
         if (vis < 0.02) { if (a.on) { a.on = false; a.el.classList.remove('on'); } continue; }
         v.set(0, 0.8, 0);
       } else if (a.layer === 't') {
