@@ -244,7 +244,7 @@ if (renderer) {
           let ux, uy;
           if (stack) { ux = (i % 2 ? 1 : -1) * 0.5; uy = 1 - 2 * i / Math.max(1, n - 1); }
           else if (n === 4) { ux = i % 2 ? 1 : -1; uy = i < 2 ? 1 : -1; }          // 2×2 corners, reading order
-          else if (n === 3) { [ux, uy] = [[-1, 0.7], [1, 0.7], [0, -1]][i]; }      // two up, one down
+          else if (n === 3) { [ux, uy] = [[-1, 0.4], [1, 0.4], [0, -1]][i]; }      // two up, one down; leaves room for the title
           else { const ang = -Math.PI / 2 + (i + 0.5) * Math.PI * 2 / n; ux = Math.cos(ang); uy = -Math.sin(ang); }
           a.x = ux * cfg.rx * kx; a.y = uy * cfg.ry * ky; a.z = cfg.z;
         });

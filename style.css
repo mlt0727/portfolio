@@ -19,6 +19,7 @@ body {
 }
 a { color: var(--cyan); text-decoration: none; }
 a:hover { text-decoration: underline; }
+a[href=""] { color: var(--faint); pointer-events: none; text-decoration: line-through; } /* link not filled in yet */
 .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; }
 
 /* ---------- nav ---------- */

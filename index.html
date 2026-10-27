@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Lingtong Meng — Portfolio</title>
-  <meta name="description" content="Turning Complex Problems into Intelligent Solutions." />
+  <meta name="description" content="Lingtong Meng — Data Science & AI student at FIU. Turning Complex Problems into Intelligent Solutions." />
   <link rel="stylesheet" href="style.css" />
   <script type="importmap">
     {"imports": {"three": "./vendor/three.module.js"}}
@@ -23,13 +23,13 @@
     <a class="nav-skip" href="#portfolio" data-skip>Skip intro ↓</a>
   </nav>
 
-  <!-- Acts 1–3: one tall section, inner block pinned while we "dive" -->
+  <!-- Acts 1–5: one tall section, inner block pinned while we fly -->
   <section class="dive" id="top" data-dive>
     <div class="pin">
       <canvas data-canvas aria-hidden="true"></canvas>
 
       <div class="hero" data-hero>
-        <p class="eyebrow mono">Data Universe // node 0001</p>
+        <p class="eyebrow mono">Data Science &amp; AI · FIU · Miami, FL</p>
         <h1>Lingtong Meng</h1>
         <p class="tagline">Turning Complex Problems into Intelligent Solutions.</p>
         <p class="hint mono">Scroll to dive in ↓</p>
@@ -43,106 +43,105 @@
       </div>
 
       <!-- Overlay content. data-layer picks the 3D layer each element is tethered to:
-           p = projects ring, 1–4 = hidden layers (skills), t = training curve (experience),
-           e = output layer (education). data-title floats a heading above a layer. -->
+           p = projects ring, 1–2 = hidden layers (skills), t = training curve (education),
+           e = output layer (experience). data-title floats a heading above a layer.
+           TODO links: fill the empty href="" entries (they render disabled until filled). -->
       <div class="overlay" data-overlay>
         <!-- 02 projects -->
         <article class="card" data-layer="p">
-          <span class="card-tag mono">Web</span>
+          <span class="card-tag mono">Web · 2026</span>
           <h3>UKG Academy Website</h3>
-          <p>Course platform front-end with responsive layouts and CMS-driven content.</p>
+          <p>Wireframed and built pages for the Academy site redesign at FIU; maintain the HSPC and ICPC pages.</p>
           <div class="card-links">
-            <a href="#" target="_blank" rel="noopener">Demo</a>
-            <a href="#" target="_blank" rel="noopener">GitHub</a>
+            <a href="" target="_blank" rel="noopener">Site</a>
             <a href="#projects">Details</a>
           </div>
         </article>
         <article class="card" data-layer="p">
-          <span class="card-tag mono">Python</span>
-          <h3>Python CRM</h3>
-          <p>Lightweight CRM with contact pipeline, reminders and CSV import/export.</p>
+          <span class="card-tag mono">Python · MySQL · AWS</span>
+          <h3>Inventory &amp; CRM System</h3>
+          <p>Streamlit app for inventory, customers, stock movements and sales orders on MySQL, deployed on AWS EC2.</p>
           <div class="card-links">
-            <a href="#" target="_blank" rel="noopener">Demo</a>
-            <a href="#" target="_blank" rel="noopener">GitHub</a>
+            <a href="" target="_blank" rel="noopener">Demo</a>
             <a href="#projects">Details</a>
           </div>
         </article>
         <article class="card" data-layer="p">
-          <span class="card-tag mono">Data</span>
+          <span class="card-tag mono">Data · Streamlit</span>
           <h3>Data Visualization Dashboard</h3>
-          <p>Interactive dashboard turning raw datasets into explorable charts.</p>
+          <p>Upload a CSV, pick variables, get line, scatter, box plots and correlation heatmaps in the browser.</p>
           <div class="card-links">
-            <a href="#" target="_blank" rel="noopener">Demo</a>
-            <a href="#" target="_blank" rel="noopener">GitHub</a>
+            <a href="" target="_blank" rel="noopener">Demo</a>
+            <a href="https://github.com/mlt0727/Data-Visualization-streamlit" target="_blank" rel="noopener">GitHub</a>
             <a href="#projects">Details</a>
           </div>
         </article>
         <article class="card" data-layer="p">
-          <span class="card-tag mono">Cloud</span>
-          <h3>AWS Project</h3>
-          <p>Serverless pipeline on AWS: Lambda, S3 and API Gateway with IaC.</p>
+          <span class="card-tag mono">Python · Requests</span>
+          <h3>12306 Train Query</h3>
+          <p>High-speed rail schedules and seat availability by station and date, parsed into Pandas tables with caching.</p>
           <div class="card-links">
-            <a href="#" target="_blank" rel="noopener">Demo</a>
-            <a href="#" target="_blank" rel="noopener">GitHub</a>
+            <a href="" target="_blank" rel="noopener">Demo</a>
+            <a href="https://github.com/mlt0727/12306-ticket" target="_blank" rel="noopener">GitHub</a>
             <a href="#projects">Details</a>
           </div>
         </article>
 
-        <!-- 03 hidden layers: skills, two layers of eight -->
+        <!-- 03 hidden layers: skills -->
         <h2 class="layer-title" data-title="1"><span class="mono">hidden layer 01</span>Languages &amp; Frameworks</h2>
         <span class="tag" data-layer="1">Python</span>
-        <span class="tag" data-layer="1">TypeScript</span>
-        <span class="tag" data-layer="1">JavaScript</span>
-        <span class="tag" data-layer="1">SQL</span>
         <span class="tag" data-layer="1">Java</span>
-        <span class="tag" data-layer="1">React</span>
-        <span class="tag" data-layer="1">Next.js</span>
-        <span class="tag" data-layer="1">Node.js</span>
+        <span class="tag" data-layer="1">C++</span>
+        <span class="tag" data-layer="1">SQL</span>
+        <span class="tag" data-layer="1">JavaScript</span>
+        <span class="tag" data-layer="1">HTML / CSS</span>
+        <span class="tag" data-layer="1">Flask</span>
+        <span class="tag" data-layer="1">Streamlit</span>
 
-        <h2 class="layer-title" data-title="2"><span class="mono">hidden layer 02</span>Data, ML &amp; Cloud</h2>
+        <h2 class="layer-title" data-title="2"><span class="mono">hidden layer 02</span>Data, Cloud &amp; Tools</h2>
         <span class="tag" data-layer="2">Pandas</span>
-        <span class="tag" data-layer="2">scikit-learn</span>
-        <span class="tag" data-layer="2">PyTorch</span>
-        <span class="tag" data-layer="2">D3.js</span>
-        <span class="tag" data-layer="2">AWS Lambda</span>
-        <span class="tag" data-layer="2">S3</span>
+        <span class="tag" data-layer="2">Matplotlib</span>
+        <span class="tag" data-layer="2">Plotly</span>
+        <span class="tag" data-layer="2">MySQL</span>
+        <span class="tag" data-layer="2">AWS EC2</span>
         <span class="tag" data-layer="2">Docker</span>
         <span class="tag" data-layer="2">Git</span>
+        <span class="tag" data-layer="2">Vercel</span>
 
         <!-- 04 training curve: education as epochs along the loss curve -->
         <h2 class="layer-title" data-title="t"><span class="mono">training · loss ↓</span>Education</h2>
         <article class="card" data-layer="t">
-          <span class="card-tag mono">epoch 01 · 2022 — 2026</span>
-          <h3>B.S. Computer Science</h3>
-          <p>Florida International University. Replace me.</p>
+          <span class="card-tag mono">epoch 01 · 2025 — 2028</span>
+          <h3>B.S. Data Science &amp; AI</h3>
+          <p>Florida International University, Miami. Minor in Mathematics. Expected December 2028.</p>
         </article>
         <article class="card" data-layer="t">
-          <span class="card-tag mono">epoch 02 · Honors</span>
-          <h3>Honors College</h3>
-          <p>Research track, Dean's List. Replace me.</p>
+          <span class="card-tag mono">epoch 02 · GPA 4.00</span>
+          <h3>Honors College · Dean's List</h3>
+          <p>Honors College member, Dean's List every term so far.</p>
         </article>
         <article class="card" data-layer="t">
-          <span class="card-tag mono">epoch 03 · Certification</span>
-          <h3>AWS Cloud Practitioner</h3>
-          <p>Replace me or delete this card.</p>
+          <span class="card-tag mono">epoch 03 · coursework</span>
+          <h3>Core Coursework</h3>
+          <p>Data Science, Statistics &amp; Probability for CS, Discrete Structures, Programming I–II, Calculus I–III.</p>
         </article>
 
         <!-- 05 output layer: experience, what all of the above became -->
         <h2 class="layer-title" data-title="e"><span class="mono">output layer</span>Experience</h2>
         <article class="card" data-layer="e">
-          <span class="card-tag mono">2025 — now</span>
-          <h3>Developer · Company</h3>
-          <p>Shipped data pipelines on AWS; cut report time by 60%. Replace me.</p>
+          <span class="card-tag mono">Mar 2026 — now</span>
+          <h3>Student Program Assistant · UKG Academy, FIU</h3>
+          <p>Academy website redesign; coordinate a 7-week ICPC training program for 20+ students and host Saturday mock contests.</p>
         </article>
         <article class="card" data-layer="e">
-          <span class="card-tag mono">2024</span>
-          <h3>Software Intern · Company</h3>
-          <p>Built internal tools in Python and React. Replace me.</p>
+          <span class="card-tag mono">Spring 2026</span>
+          <h3>Tech Team · FIU High School Programming Competition</h3>
+          <p>Set up and tested the judging environment and contestant machines; on-site technical support during the contest.</p>
         </article>
         <article class="card" data-layer="e">
-          <span class="card-tag mono">2023</span>
-          <h3>Teaching Assistant · FIU</h3>
-          <p>Led labs for intro programming; wrote autograder scripts. Replace me.</p>
+          <span class="card-tag mono">Nov 2025 — now</span>
+          <h3>ICPC Contestant · FIU</h3>
+          <p>Competed in ICPC and train with the team. 358 LeetCode problems solved, 177 Medium and 51 Hard.</p>
         </article>
       </div>
 
@@ -150,22 +149,36 @@
     </div>
   </section>
 
-  <!-- Act 4: the readable portfolio -->
+  <!-- Act 6: the readable portfolio -->
   <main class="portfolio" id="portfolio">
     <section id="experience">
       <h2>Experience</h2>
       <div class="row">
-        <div class="when mono">2025 — now</div>
+        <div class="when mono">Mar 2026 — now</div>
         <div>
-          <h3>Software Developer · Company Name</h3>
-          <p>One or two lines on what you built and the impact it had. Replace me.</p>
+          <h3>Student Program Assistant · UKG Academy for Computer Science Education, FIU</h3>
+          <p>Designed wireframes and developed pages for the Academy website redesign; test the site and maintain the HSPC and ICPC pages. Coordinate a 7-week ICPC training program for 20+ students: faculty-led lectures, practice sessions, registration and scheduling in Qualtrics, and Saturday mock competitions ahead of the regional contest.</p>
         </div>
       </div>
       <div class="row">
-        <div class="when mono">2024 — 2025</div>
+        <div class="when mono">Spring 2026</div>
         <div>
-          <h3>Intern · Company Name</h3>
-          <p>One or two lines on what you built and the impact it had. Replace me.</p>
+          <h3>Tech Team · FIU High School Programming Competition</h3>
+          <p>Set up and tested the judging environment and contestant computers before the competition; troubleshot machines and provided on-site technical support during it.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="when mono">Nov 2025 — now</div>
+        <div>
+          <h3>Contestant · ICPC Competitive Programming, FIU</h3>
+          <p>Competed in ICPC and continue training with the FIU team. 358 LeetCode problems solved (177 Medium, 51 Hard) across graphs, dynamic programming, binary search and sliding windows.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="when mono">Aug 2025 — now</div>
+        <div>
+          <h3>Member · FIU INIT</h3>
+          <p>Technical workshops and collaborative build sessions focused on programming and web development.</p>
         </div>
       </div>
     </section>
@@ -174,24 +187,44 @@
       <h2>Projects</h2>
       <div class="grid">
         <article>
-          <h3>UKG Academy Website</h3>
-          <p>Stack, problem, result. Replace me.</p>
-          <p class="links"><a href="#">Demo</a> · <a href="#">GitHub</a></p>
+          <h3>Inventory &amp; CRM System</h3>
+          <p>Python, Streamlit, MySQL, AWS EC2. Manages product inventory, customer records, stock movements, sales orders and maintenance records; user authentication and modular database access; deployed on EC2.</p>
+          <p class="links"><a href="">Demo</a></p>
         </article>
         <article>
-          <h3>Python CRM</h3>
-          <p>Stack, problem, result. Replace me.</p>
-          <p class="links"><a href="#">Demo</a> · <a href="#">GitHub</a></p>
+          <h3>UKG Academy Website</h3>
+          <p>Wireframes and front-end development for the Academy site redesign at FIU, plus the HSPC and ICPC pages.</p>
+          <p class="links"><a href="">Site</a></p>
         </article>
         <article>
           <h3>Data Visualization Dashboard</h3>
-          <p>Stack, problem, result. Replace me.</p>
-          <p class="links"><a href="#">Demo</a> · <a href="#">GitHub</a></p>
+          <p>Python, Streamlit, Pandas, Matplotlib, Plotly. CSV upload, descriptive statistics, selectable variables; line, scatter and box plots and correlation heatmaps.</p>
+          <p class="links"><a href="">Demo</a> · <a href="https://github.com/mlt0727/Data-Visualization-streamlit" target="_blank" rel="noopener">GitHub</a></p>
         </article>
         <article>
-          <h3>AWS Project</h3>
-          <p>Stack, problem, result. Replace me.</p>
-          <p class="links"><a href="#">Demo</a> · <a href="#">GitHub</a></p>
+          <h3>12306 Train Query App</h3>
+          <p>Python, Streamlit, Requests, Pandas. High-speed rail schedules and seat availability by station and date; station-data caching, input validation and request error handling.</p>
+          <p class="links"><a href="">Demo</a> · <a href="https://github.com/mlt0727/12306-ticket" target="_blank" rel="noopener">GitHub</a></p>
+        </article>
+        <article>
+          <h3>TypeScript Workshop</h3>
+          <p>TypeScript. Free, open-source interactive TypeScript learning platform in Chinese: lessons, runnable examples, real type checking and graded exercises.</p>
+          <p class="links"><a href="https://typescript-workshop-ligntong.vercel.app" target="_blank" rel="noopener">Demo</a> · <a href="https://github.com/mlt0727/typescript-workshop" target="_blank" rel="noopener">GitHub</a></p>
+        </article>
+        <article>
+          <h3>ICPC Team Builder</h3>
+          <p>TypeScript, Supabase. Reusable ICPC team organizer with audit history and password-protected event administration.</p>
+          <p class="links"><a href="https://icpc-team-builder-six.vercel.app" target="_blank" rel="noopener">Demo</a> · <a href="https://github.com/mlt0727/icpc-team-builder" target="_blank" rel="noopener">GitHub</a></p>
+        </article>
+        <article>
+          <h3>FIU Honors Planner</h3>
+          <p>TypeScript, Neon. Personal FIU Honors engagement planner with database sync and reminder review.</p>
+          <p class="links"><a href="https://fiu-honors-planner.vercel.app" target="_blank" rel="noopener">Demo</a> · <a href="https://github.com/mlt0727/fiu-honors-planner" target="_blank" rel="noopener">GitHub</a></p>
+        </article>
+        <article>
+          <h3>Fangcun Cube School</h3>
+          <p>JavaScript. Step-by-step animated learning platform for 3×3 and 4×4 Rubik's cubes (Chinese).</p>
+          <p class="links"><a href="https://mlt0727.github.io/fangcun-cube-school/" target="_blank" rel="noopener">Demo</a> · <a href="https://github.com/mlt0727/fangcun-cube-school" target="_blank" rel="noopener">GitHub</a></p>
         </article>
       </div>
     </section>
@@ -199,18 +232,19 @@
     <section id="skills">
       <h2>Skills</h2>
       <ul class="chips">
-        <li>Python</li><li>JavaScript / TypeScript</li><li>React</li><li>Node.js</li>
-        <li>SQL</li><li>AWS</li><li>Data Visualization</li><li>Git</li>
+        <li>Python</li><li>Java</li><li>C++</li><li>SQL</li><li>JavaScript</li><li>HTML / CSS</li>
+        <li>Flask</li><li>Streamlit</li><li>Pandas</li><li>Matplotlib</li><li>Plotly</li>
+        <li>MySQL</li><li>AWS EC2</li><li>Linux</li><li>Docker</li><li>Vercel</li><li>Git / GitHub</li>
       </ul>
     </section>
 
     <section id="education">
       <h2>Education</h2>
       <div class="row">
-        <div class="when mono">2022 — 2026</div>
+        <div class="when mono">Jun 2025 — Dec 2028</div>
         <div>
-          <h3>B.S. Computer Science · Florida International University</h3>
-          <p>Honors, relevant coursework. Replace me.</p>
+          <h3>B.S. Data Science and Artificial Intelligence · Florida International University</h3>
+          <p>Minor in Mathematics. Honors College, Dean's List, GPA 4.00. Coursework: Data Science, Statistics &amp; Probability for CS, Discrete Structures, Programming I–II, Calculus I–III, Physics with Calculus.</p>
         </div>
       </div>
     </section>
@@ -218,14 +252,14 @@
     <section id="contact">
       <h2>Contact</h2>
       <p class="links big">
-        <a href="resume.pdf">Resume (PDF)</a> ·
-        <a href="mailto:you@example.com">Email</a> ·
-        <a href="https://github.com/" target="_blank" rel="noopener">GitHub</a> ·
-        <a href="https://linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="resume.pdf" target="_blank" rel="noopener">Resume (PDF)</a> ·
+        <a href="mailto:lmeng006@fiu.edu">lmeng006@fiu.edu</a> ·
+        <a href="https://github.com/mlt0727" target="_blank" rel="noopener">GitHub</a> ·
+        <a href="https://www.linkedin.com/in/lingtong0727/" target="_blank" rel="noopener">LinkedIn</a>
       </p>
     </section>
 
-    <footer class="mono">© 2026 Lingtong Meng</footer>
+    <footer class="mono">© 2026 Lingtong Meng · Miami, FL</footer>
   </main>
 
   <script type="module" src="main.js"></script>
