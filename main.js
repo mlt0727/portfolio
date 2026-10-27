@@ -239,16 +239,16 @@ if (renderer) {
     for (const [L, cfg] of Object.entries(LAYERS)) {
       const items = (byLayer[L] || []).map((i) => anchors[i]), n = items.length;
       if (cfg.kind === 'ring') {
-        const stack = aspect < 1 && n !== 4 && items[0]?.el.classList.contains('card'); // phones: big cards go in a column
+        const stack = aspect < 1.3 && n !== 4 && items[0]?.el.classList.contains('card'); // narrow views: big cards go in a column
         items.forEach((a, i) => {
           let ux, uy;
-          if (stack) { ux = (i % 2 ? 1 : -1) * 0.5; uy = 1 - 2 * i / Math.max(1, n - 1); }
+          if (stack) { ux = (i % 2 ? 1 : -1) * 0.5; uy = 0.75 - 1.85 * i / Math.max(1, n - 1); }
           else if (n === 4) { ux = i % 2 ? 1 : -1; uy = i < 2 ? 1 : -1; }          // 2×2 corners, reading order
           else if (n === 3) { [ux, uy] = [[-1, 0.4], [1, 0.4], [0, -1]][i]; }      // two up, one down; leaves room for the title
           else { const ang = -Math.PI / 2 + (i + 0.5) * Math.PI * 2 / n; ux = Math.cos(ang); uy = -Math.sin(ang); }
           a.x = ux * cfg.rx * kx; a.y = uy * cfg.ry * ky; a.z = cfg.z;
         });
-        for (const a of anchors) if (a.title && a.layer === L) { a.x = 0; a.y = cfg.ry * ky + 7; a.z = cfg.z; }
+        for (const a of anchors) if (a.title && a.layer === L) { a.x = 0; a.y = cfg.ry * ky + (stack ? 10 : 7); a.z = cfg.z; }
       } else {
         items.forEach((a, i) => {
           const u = (i + 0.5) / n;
