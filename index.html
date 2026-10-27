@@ -159,9 +159,27 @@
           <a href="https://www.linkedin.com/in/lingtong0727/" target="_blank" rel="noopener">LinkedIn</a>
           <a href="resume.pdf" target="_blank" rel="noopener">Resume</a>
         </p>
-        <p class="hint mono">Keep scrolling for the full profile ↓</p>
+        <p class="hint mono">Keep scrolling for the backward pass ↓</p>
       </div>
     </div>
+  </section>
+
+  <!-- Backward pass: what the flight was, read in reverse. Side graphs are built by main.js. -->
+  <section class="bp" id="backprop">
+    <div class="bp-side" data-bp-side aria-hidden="true"></div>
+    <div class="bp-main">
+      <p class="eyebrow mono">backward pass · ∂ loss / ∂ layer</p>
+      <h2>Everything above was the forward pass.</h2>
+      <p>A network learns in two directions. Data flows forward through the layers to an output; the error then flows backward through the same layers as gradients, telling each one how to change. That is backpropagation, and it is also how this page is laid out: the dive was the forward pass, the card with my name was the output, and the plain profile below reads the layers in reverse, from what I do now back to what started it.</p>
+      <ol class="bp-steps">
+        <li><span class="mono">∂ output</span><span><a href="#experience">Experience</a> <span>— what the network produces today</span></span></li>
+        <li><span class="mono">∂ training</span><span><a href="#education">Education</a> <span>— the loss curve, still going down</span></span></li>
+        <li><span class="mono">∂ hidden</span><span><a href="#skills">Skills</a> <span>— the weights that did the work</span></span></li>
+        <li><span class="mono">∂ core</span><span><a href="#projects">Projects</a> <span>— where the activations were strongest</span></span></li>
+        <li><span class="mono">∂ input</span><span><a href="#contact">Contact</a> <span>— back where it started</span></span></li>
+      </ol>
+    </div>
+    <div class="bp-side" data-bp-side aria-hidden="true"></div>
   </section>
 
   <!-- Act 6: the readable portfolio -->
