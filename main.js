@@ -39,13 +39,13 @@ const curveY = (u) => 14 - 24 * (1 - Math.exp(-2.6 * u)); // "training loss" sha
 // Camera keyframes [p, z, y]; equal z in neighbours = hold still so cards can be read.
 const KEYS = [
   [0.00, 45, 0],
-  [0.18, -193, 0], [0.25, -193, 0],      // projects
-  [0.33, -295, 0], [0.36, -295, 0],      // hidden layer 1 (longer approach from the input ring)
-  [0.41, -365, 0], [0.45, -365, 0],      // hidden layer 2
+  [0.16, -193, 0], [0.21, -193, 0],      // education: hold 0.05
+  [0.29, -295, 0], [0.34, -295, 0],      // hidden layer 1: hold 0.05
+  [0.40, -365, 0], [0.45, -365, 0],      // hidden layer 2: hold 0.05
   [0.50, -435, 12], [0.60, -545, curveY(0.45) + 6], [0.70, -620, curveY(1) + 6], // training curve
   [0.80, -655, 0], [1.00, -655, 0],      // output layer: read until 0.90, veil 0.90–1.0 (style.css)
 ];
-const PHASES = [[0.12, '00 · diving in'], [0.29, '01 Input layer · education'], [0.47, '02 Hidden layers · skills'], [0.74, '03 Training · experience'], [1.01, '04 Output layer · projects']];
+const PHASES = [[0.11, '00 · diving in'], [0.26, '01 Input layer · education'], [0.47, '02 Hidden layers · skills'], [0.74, '03 Training · experience'], [1.01, '04 Output layer · projects']];
 
 // ---------- renderer / scene ----------
 let renderer;
