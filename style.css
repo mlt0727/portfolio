@@ -96,13 +96,13 @@ a[href=""] { color: var(--faint); pointer-events: none; text-decoration: line-th
 }
 
 .veil {
-  position: absolute; inset: 0; background: var(--bg); pointer-events: none;
+  position: absolute; inset: 0; z-index: 3; background: var(--bg); pointer-events: none; /* above every overlay element, titles included */
   opacity: calc((var(--p) - 0.88) * 12.5);
 }
 
 /* landing card over the veil */
 .outro {
-  position: absolute; inset: 0; display: grid; place-content: center; text-align: center;
+  position: absolute; inset: 0; z-index: 4; display: grid; place-content: center; text-align: center;
   padding: 16vh 1.5rem 0; pointer-events: none; /* sits low so the next section follows closely as the curtain lifts */
   opacity: calc((var(--p) - 0.93) * 14);
   transform: translateY(calc((1 - var(--p)) * 400px));
