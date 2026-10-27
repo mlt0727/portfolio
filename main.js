@@ -163,7 +163,7 @@ if (renderer) {
   // training loss curves (education chapter): glowing tubes, "train" orange / "val" violet,
   // a floor grid with one tick per epoch, and a spark running down the train curve
   const T = LAYERS.t, NL = 160, FLOOR = -15, CX = -7; // curve runs left of centre, cards on the right
-  const CS = T.z0 + 25, CE = T.z1 - 45;                 // curve starts a little before the first epoch and runs past the last
+  const CS = T.z0 + 25, CE = T.z1 - 20;                 // starts a little before the first epoch, ends before the output ring's camera stop
   const curveYAtZ = (zz) => curveY(clamp((CS - zz) / (CS - CE), 0, 1));
   const mkCurve = (color, dy, wobble, radius, opacity) => {
     const pts = [];
@@ -364,8 +364,8 @@ if (renderer) {
         const fin = a.ti === 0 ? 1 : smooth(fT / 0.12), fout = a.ti === nT - 1 ? 1 : 1 - smooth((fT - 0.88) / 0.12);
         vis = a.ti === idxT ? w * fin * fout : 0;
         if (vis < 0.02) { if (a.on) { a.on = false; a.el.classList.remove('on'); } continue; }
-        const az = z - 42;
-        v.set(CX + 7 * Math.min(1, camera.aspect / 1.5), curveYAtZ(az) + 2, az).project(camera);
+        // screen-space: upper third, alternating right / left / right so consecutive cards cross over
+        v.set(a.ti % 2 ? -0.44 : 0.44, 0.34, 0);
       } else {
         const far = a.layer === 'e' ? 45 : 60; // the output ring fades in late so its four cards never pile up at a distance
         const d = z - a.z; vis = smooth((d - 10) / 8) * (1 - smooth((d - far) / 25));
