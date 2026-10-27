@@ -13,7 +13,7 @@ const smooth = (t) => { t = clamp(t, 0, 1); return t * t * (3 - 2 * t); };
 
 const dive = $('[data-dive]');
 const canvas = $('[data-canvas]');
-const hud = { phase: $('[data-phase]'), depth: $('[data-depth]'), nodes: $('[data-nodes]') };
+const hud = { phase: $('[data-phase]'), depth: $('[data-depth]'), nodes: $('[data-nodes]'), loss: $('[data-loss]') };
 
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const small = matchMedia('(max-width: 720px)').matches;
@@ -41,7 +41,7 @@ const KEYS = [
   [0.18, -193, 0], [0.25, -193, 0],      // projects
   [0.31, -295, 0], [0.35, -295, 0],      // hidden layer 1
   [0.40, -365, 0], [0.44, -365, 0],      // hidden layer 2
-  [0.50, -435, 12], [0.60, -545, curveY(0.45) + 5], [0.70, -620, curveY(1) + 5], // training curve
+  [0.50, -435, 14], [0.60, -545, curveY(0.45) + 8], [0.70, -620, curveY(1) + 8], // training curve
   [0.78, -655, 0], [1.00, -655, 0],      // output layer, then veil
 ];
 const PHASES = [[0.18, '01 Input · diving'], [0.29, '02 Core · projects'], [0.47, '03 Hidden layers · skills'], [0.74, '04 Training · education'], [1.01, '05 Output · experience']];
@@ -66,14 +66,14 @@ if (renderer) {
   const pick = () => { const r = Math.random(); return r < 0.74 ? C_CYAN : r < 0.92 ? C_VIO : C_ORA; };
 
   const pointsMat = new THREE.ShaderMaterial({
-    uniforms: { uTime: { value: 0 }, uTwinkle: { value: reduced ? 0 : 1 } },
+    uniforms: { uTime: { value: 0 }, uTwinkle: { value: reduced ? 0 : 1 }, uAlpha: { value: 1 } },
     vertexShader: `
       attribute float aSize; varying vec3 vColor; varying float vTw;
-      uniform float uTime, uTwinkle;
+      uniform float uTime, uTwinkle, uAlpha;
       void main() {
         vColor = color;
         vec4 mv = modelViewMatrix * vec4(position, 1.0);
-        vTw = 1.0 - uTwinkle * 0.3 * (0.5 + 0.5 * sin(uTime * 2.0 + position.x * 0.9 + position.y * 1.3 + position.z * 0.4));
+        vTw = uAlpha * (1.0 - uTwinkle * 0.3 * (0.5 + 0.5 * sin(uTime * 2.0 + position.x * 0.9 + position.y * 1.3 + position.z * 0.4)));
         gl_PointSize = clamp(aSize * vTw * (260.0 / -mv.z), 0.0, 40.0);
         gl_Position = projectionMatrix * mv;
       }`,
@@ -87,12 +87,13 @@ if (renderer) {
       }`,
     vertexColors: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
   });
-  const mkPoints = (p, c, s) => {
+  const coreMat = pointsMat.clone(); // own uAlpha so the core can fade as the camera flies through it
+  const mkPoints = (p, c, s, mat = pointsMat) => {
     const g = new THREE.BufferGeometry();
     g.setAttribute('position', new THREE.BufferAttribute(p, 3));
     g.setAttribute('color', new THREE.BufferAttribute(c, 3));
     g.setAttribute('aSize', new THREE.BufferAttribute(s, 1));
-    const m = new THREE.Points(g, pointsMat); m.frustumCulled = false; scene.add(m); return m;
+    const m = new THREE.Points(g, mat); m.frustumCulled = false; scene.add(m); return m;
   };
   const mkLines = (p, c, opacity) => {
     const g = new THREE.BufferGeometry();
@@ -124,7 +125,7 @@ if (renderer) {
     const c = Math.random() < 0.5 ? C_WHITE : C_CYAN; ccol.set([c.r, c.g, c.b], i * 3);
     csize[i] = 0.9 + Math.random() * 1.5;
   }
-  mkPoints(cpos, ccol, csize);
+  mkPoints(cpos, ccol, csize, coreMat);
 
   // field links: grid hash, each node links to its nearest few
   const cell = CFG.linkDist, grid = new Map();
@@ -158,20 +159,45 @@ if (renderer) {
   const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(gc), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, opacity: 0.6 }));
   glow.position.copy(CORE); glow.scale.setScalar(30); scene.add(glow);
 
-  // training loss curves (experience chapter): "train" in orange, "val" in violet
-  const T = LAYERS.t, NL = 160;
-  const mkCurve = (color, dy, wobble, opacity) => {
-    const a = new Float32Array(NL * 3);
+  // training loss curves (education chapter): glowing tubes, "train" orange / "val" violet,
+  // a floor grid with one tick per epoch, and a spark running down the train curve
+  const T = LAYERS.t, NL = 160, FLOOR = -15, CX = -7; // curve runs left of centre, cards on the right
+  const mkCurve = (color, dy, wobble, radius, opacity) => {
+    const pts = [];
     for (let i = 0; i < NL; i++) {
       const u = i / (NL - 1);
-      a.set([0, curveY(u) + dy + wobble * Math.sin(u * 40) * (0.3 + u), lerp(T.z0 - 25, T.z1 + 25, u)], i * 3);
+      pts.push(new THREE.Vector3(CX, curveY(u) + dy + wobble * Math.sin(u * 40) * (0.3 + u), lerp(T.z0 - 25, T.z1 + 25, u)));
     }
-    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(a, 3));
-    const l = new THREE.Line(g, new THREE.LineBasicMaterial({ color, transparent: true, opacity, blending: THREE.AdditiveBlending, depthWrite: false }));
-    l.frustumCulled = false; scene.add(l);
+    const curve = new THREE.CatmullRomCurve3(pts);
+    const mesh = new THREE.Mesh(new THREE.TubeGeometry(curve, NL, radius, 6, false),
+      new THREE.MeshBasicMaterial({ color, transparent: true, opacity, blending: THREE.AdditiveBlending, depthWrite: false }));
+    mesh.frustumCulled = false; scene.add(mesh);
+    return curve;
   };
-  mkCurve(C_ORA, 0, 0.35, 0.9);
-  mkCurve(C_VIO, 1.6, 0.9, 0.45);
+  const trainCurve = mkCurve(C_ORA, 0, 0.35, 0.2, 0.75);
+  mkCurve(C_VIO, 1.6, 0.9, 0.12, 0.4);
+  { // beads of light along the train curve so it reads from far away
+    const NB = 70, bp = new Float32Array(NB * 3), bc = new Float32Array(NB * 3).map((_, i) => [C_ORA.r, C_ORA.g, C_ORA.b][i % 3]);
+    for (let i = 0; i < NB; i++) trainCurve.getPoint((i + 0.5) / NB).toArray(bp, i * 3);
+    mkPoints(bp, bc, new Float32Array(NB).fill(2.6));
+  }
+  { // floor grid: baseline, cross rungs every 40 units, a tick up to the curve at each epoch
+    const g = [], gcol = [], nEp = $$('[data-layer="t"]').length;
+    const push = (a, b) => { g.push(...a, ...b); gcol.push(C_CYAN.r, C_CYAN.g, C_CYAN.b, C_CYAN.r, C_CYAN.g, C_CYAN.b); };
+    for (const x of [CX - 14, CX, CX + 14]) push([x, FLOOR, T.z0 - 25], [x, FLOOR, T.z1 + 25]);
+    for (let z = T.z0 - 20; z >= T.z1 + 20; z -= 40) push([CX - 14, FLOOR, z], [CX + 14, FLOOR, z]);
+    for (let i = 0; i < nEp; i++) { const u = (i + 0.5) / nEp, z = lerp(T.z0, T.z1, u); push([CX, FLOOR, z], [CX, curveY(u), z]); }
+    mkLines(new Float32Array(g), new Float32Array(gcol), 0.28);
+  }
+  const spark = mkPoints(new Float32Array(3), new Float32Array([C_WHITE.r, C_WHITE.g, C_WHITE.b]), new Float32Array([8]));
+  let sparkT = 0;
+
+  // speed streaks: short lines along z around the camera, stretched by camera speed
+  const NS = reduced ? 0 : 320, sPos = new Float32Array(NS * 6), sCol = new Float32Array(NS * 6);
+  const streak = Array.from({ length: NS }, () => ({ x: 0, y: 0, z: 1e9 }));
+  for (let i = 0; i < NS; i++) sCol.set([C_CYAN.r, C_CYAN.g, C_CYAN.b, 0, 0, 0], i * 6); // bright head, dark tail
+  const streaks = mkLines(sPos, sCol, 0);
+  const respawn = (s, camZ) => { const a = Math.random() * Math.PI * 2, r = 4 + Math.random() * 30; s.x = Math.cos(a) * r; s.y = Math.sin(a) * r * 0.7; s.z = camZ - 60 - Math.random() * 160; };
 
   // ---------- overlay anchors: one neuron per HTML element, edges between layers ----------
   // anchors[0] is the core itself (no element)
@@ -226,7 +252,7 @@ if (renderer) {
       } else {
         items.forEach((a, i) => {
           const u = (i + 0.5) / n;
-          a.x = (i % 2 ? 1 : -1) * 9 * kx; a.y = curveY(u) + 1.5; a.z = lerp(cfg.z0, cfg.z1, u);
+          a.x = 9 * kx; a.y = curveY(u) + 1.5; a.z = lerp(cfg.z0, cfg.z1, u);
         });
         for (const a of anchors) if (a.title && a.layer === L) { a.x = 0; a.y = curveY(0) + 9; a.z = cfg.z0 - 10; }
       }
@@ -236,6 +262,9 @@ if (renderer) {
     anchorPts.geometry.attributes.position.needsUpdate = true;
     edgeLines.geometry.attributes.position.needsUpdate = true;
   };
+
+  // ponytail: no bloom post-processing. UnrealBloom lifted the whole background to grey-blue
+  // at every setting tried; glow comes from additive geometry (halos, tubes, beads) instead.
 
   // ---------- scroll + render loop ----------
   const mouse = { x: 0, y: 0 }, sm = { x: 0, y: 0 };
@@ -255,7 +284,7 @@ if (renderer) {
   };
 
   const v = new THREE.Vector3(), clock = new THREE.Clock();
-  let lastP = -1, lastZ = KEYS[0][1], fov = 60, elapsed = 0;
+  let lastP = -1, lastZ = KEYS[0][1], fov = 60, elapsed = 0, spd = 0;
   const frame = () => {
     requestAnimationFrame(frame);
     const top = dive.offsetTop, h = dive.offsetHeight - innerHeight;
@@ -267,7 +296,8 @@ if (renderer) {
     // camera: keyframed z/y, mouse parallax, fov widens with speed
     const { z, y } = camAt(p);
     sm.x += (mouse.x - sm.x) * 0.05; sm.y += (mouse.y - sm.y) * 0.05;
-    const speed = Math.abs(z - lastZ) / Math.max(dt, 1e-3); lastZ = z;
+    spd = lerp(spd, Math.abs(z - lastZ) / Math.max(dt, 1e-3), 0.12); lastZ = z; // smoothed camera speed
+    const speed = spd;
     fov = lerp(fov, 60 + 16 * clamp(speed / 150, 0, 1), 0.1);
     camera.position.set(sm.x * 6, y - sm.y * 4, z);
     camera.lookAt(sm.x * 2, y - sm.y * 2, z - 60);
@@ -276,8 +306,11 @@ if (renderer) {
 
     // ambient animation
     fieldLines.material.opacity = 0.2 * smooth(elapsed / 3);      // act 1: the network "forms" after load
-    glow.material.opacity = 0.3 + 0.5 * smooth((p - 0.05) / 0.15);
-    pointsMat.uniforms.uTime.value += dt;
+    // core fades out as the camera gets within ~30 units, so flying through it never whites out
+    const coreFade = smooth((z - CORE.z - 6) / 26);
+    glow.material.opacity = (0.3 + 0.5 * smooth((p - 0.05) / 0.15)) * coreFade;
+    coreMat.uniforms.uAlpha.value = coreFade;
+    pointsMat.uniforms.uTime.value += dt; coreMat.uniforms.uTime.value += dt;
     for (let i = 0; i < NPULSE; i++) {
       const q = pulses[i]; q.t += q.v * dt;
       if (q.t >= 1) { q.t -= 1; q.e = pulseEdges[Math.floor(Math.random() * pulseEdges.length)]; }
@@ -285,11 +318,28 @@ if (renderer) {
       ppos.set([lerp(A.x, B.x, q.t), lerp(A.y, B.y, q.t), lerp(A.z, B.z, q.t)], i * 3);
     }
     if (NPULSE) pulsePts.geometry.attributes.position.needsUpdate = true;
+    sparkT = (sparkT + dt * 0.22) % 1;
+    trainCurve.getPoint(sparkT).toArray(spark.geometry.attributes.position.array, 0);
+    spark.geometry.attributes.position.needsUpdate = true;
+
+    // speed streaks: respawn ahead once passed, stretch with speed, fade in with speed
+    const len = clamp(speed * 0.05, 0, 14), sAlpha = clamp((speed - 20) / 120, 0, 0.7);
+    streaks.material.opacity = sAlpha;
+    if (sAlpha > 0) {
+      for (let i = 0; i < NS; i++) {
+        const s = streak[i];
+        if (s.z > z + 4 || s.z < z - 260) respawn(s, z);
+        sPos.set([s.x, s.y, s.z, s.x, s.y, s.z - len], i * 6);
+      }
+      streaks.geometry.attributes.position.needsUpdate = true;
+    }
 
     // HUD
     hud.depth.textContent = p.toFixed(2);
     const phase = PHASES.find(([end]) => p < end)[1];
     if (hud.phase.textContent !== phase) hud.phase.textContent = phase;
+    const u = (T.z0 - z) / (T.z0 - T.z1);
+    hud.loss.textContent = u > -0.2 && u < 1.3 ? (0.92 * Math.exp(-2.6 * clamp(u, 0, 1)) + 0.07).toFixed(3) : '—';
 
     // overlays: show each element while its anchor is 10–85 units ahead of the camera
     for (const a of anchors) {
