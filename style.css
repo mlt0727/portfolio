@@ -95,12 +95,28 @@ a[href=""] { color: var(--faint); pointer-events: none; text-decoration: line-th
 
 .veil {
   position: absolute; inset: 0; background: var(--bg); pointer-events: none;
-  opacity: calc((var(--p) - 0.9) * 10);
+  opacity: calc((var(--p) - 0.88) * 12.5);
 }
 
+/* landing card over the veil */
+.outro {
+  position: absolute; inset: 0; display: grid; place-content: center; text-align: center;
+  padding: 16vh 24px 0; pointer-events: none; /* sits low so Experience follows closely as the curtain lifts */
+  opacity: calc((var(--p) - 0.93) * 14);
+  transform: translateY(calc((1 - var(--p)) * 400px));
+}
+.outro.on { pointer-events: auto; }
+.outro .eyebrow { color: var(--cyan); margin: 0 0 14px; }
+.outro h2 { margin: 0 0 16px; font-size: clamp(36px, 6vw, 72px); font-weight: 800; letter-spacing: -0.02em; line-height: 1; text-shadow: 0 0 30px rgba(79, 227, 255, 0.4); }
+.outro-line { margin: 0 0 6px; font-size: clamp(14px, 1.6vw, 18px); color: var(--fg); }
+.outro-line.faint { color: var(--faint); }
+.outro-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 22px; margin: 22px 0 0; font-size: 15px; }
+.outro .hint { margin-top: 48px; color: var(--faint); }
+
 /* ---------- act 4 ---------- */
-.portfolio { position: relative; background: var(--bg); max-width: 920px; margin: 0 auto; padding: 96px 24px 64px; }
+.portfolio { position: relative; background: var(--bg); max-width: 920px; margin: 0 auto; padding: 24px 24px 64px; }
 .portfolio section { padding: 48px 0; border-top: 1px solid rgba(230, 236, 245, 0.08); }
+.portfolio section:first-child { border-top: 0; }
 .portfolio h2 { margin: 0 0 24px; font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cyan); }
 .portfolio h3 { margin: 0 0 4px; font-size: 18px; }
 .portfolio p { margin: 0; color: var(--faint); }

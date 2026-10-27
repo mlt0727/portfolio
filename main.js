@@ -13,6 +13,7 @@ const smooth = (t) => { t = clamp(t, 0, 1); return t * t * (3 - 2 * t); };
 
 const dive = $('[data-dive]');
 const canvas = $('[data-canvas]');
+const outro = $('[data-outro]');
 const hud = { phase: $('[data-phase]'), depth: $('[data-depth]'), nodes: $('[data-nodes]'), loss: $('[data-loss]') };
 
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -291,7 +292,10 @@ if (renderer) {
     const p = clamp((scrollY - top) / Math.max(1, h), 0, 1);
     if (scrollY > top + dive.offsetHeight) return; // intro scrolled away: idle
     const dt = Math.min(clock.getDelta(), 0.05); elapsed += dt;
-    if (p !== lastP) { lastP = p; document.documentElement.style.setProperty('--p', p.toFixed(4)); }
+    if (p !== lastP) {
+      lastP = p; document.documentElement.style.setProperty('--p', p.toFixed(4));
+      outro.classList.toggle('on', p > 0.95); // landing card becomes clickable once it is readable
+    }
 
     // camera: keyframed z/y, mouse parallax, fov widens with speed
     const { z, y } = camAt(p);
