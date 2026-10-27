@@ -22,33 +22,29 @@ const small = matchMedia('(max-width: 720px)').matches;
 const CORE = new THREE.Vector3(0, 0, -245);
 const CFG = {
   nodes: reduced || small ? 3000 : 7000,
-  zNear: 60, zFar: -900, rHole: 7, rMax: 42,
+  zNear: 60, zFar: -720, rHole: 7, rMax: 42,
   linkDist: 13, linksPerNode: 2,
 };
 // Each overlay layer: where it sits on the z axis and how its items are arranged.
 // ring: items on an ellipse (rx, ry) facing the camera. path: items along the loss curve.
 const LAYERS = {
   p: { z: -228, kind: 'ring', rx: 17, ry: 9, size: 9, color: '#ffb45c', link: 'core' },
-  1: { z: -330, kind: 'ring', rx: 15, ry: 9, size: 5, color: '#4fe3ff', link: 'core' },
-  2: { z: -400, kind: 'ring', rx: 15, ry: 9, size: 5, color: '#4fe3ff', link: '1' },
-  3: { z: -470, kind: 'ring', rx: 15, ry: 9, size: 5, color: '#4fe3ff', link: '2' },
-  4: { z: -540, kind: 'ring', rx: 15, ry: 9, size: 5, color: '#4fe3ff', link: '3' },
-  t: { z0: -610, z1: -800, kind: 'path', size: 7, color: '#ffb45c', link: 'chain' },
-  e: { z: -870, kind: 'ring', rx: 12, ry: 7, size: 7, color: '#8b5cf6', link: 't' },
+  1: { z: -330, kind: 'ring', rx: 18, ry: 10, size: 5, color: '#4fe3ff', link: 'core' },   // skills
+  2: { z: -400, kind: 'ring', rx: 18, ry: 10, size: 5, color: '#4fe3ff', link: '1' },      // skills
+  t: { z0: -470, z1: -620, kind: 'path', size: 7, color: '#8b5cf6', link: 'chain' },       // education = training
+  e: { z: -690, kind: 'ring', rx: 17, ry: 9, size: 8, color: '#ffb45c', link: 't' },       // experience = output
 };
 const curveY = (u) => 14 - 24 * (1 - Math.exp(-2.6 * u)); // "training loss" shape, y over 0..1
 // Camera keyframes [p, z, y]; equal z in neighbours = hold still so cards can be read.
 const KEYS = [
   [0.00, 45, 0],
-  [0.16, -193, 0], [0.23, -193, 0],      // projects
-  [0.29, -295, 0], [0.33, -295, 0],      // hidden layer 1
-  [0.38, -365, 0], [0.42, -365, 0],      // 2
-  [0.47, -435, 0], [0.51, -435, 0],      // 3
-  [0.56, -505, 0], [0.60, -505, 0],      // 4
-  [0.65, -575, 12], [0.74, -690, curveY(0.42) + 5], [0.84, -800, curveY(1) + 5], // training curve
-  [0.90, -835, 0], [1.00, -835, 0],      // output layer, then veil
+  [0.18, -193, 0], [0.25, -193, 0],      // projects
+  [0.31, -295, 0], [0.35, -295, 0],      // hidden layer 1
+  [0.40, -365, 0], [0.44, -365, 0],      // hidden layer 2
+  [0.50, -435, 12], [0.60, -545, curveY(0.45) + 5], [0.70, -620, curveY(1) + 5], // training curve
+  [0.78, -655, 0], [1.00, -655, 0],      // output layer, then veil
 ];
-const PHASES = [[0.16, '01 Input · diving'], [0.27, '02 Core · projects'], [0.63, '03 Hidden layers · skills'], [0.87, '04 Training · experience'], [1.01, '05 Output · education']];
+const PHASES = [[0.18, '01 Input · diving'], [0.29, '02 Core · projects'], [0.47, '03 Hidden layers · skills'], [0.74, '04 Training · education'], [1.01, '05 Output · experience']];
 
 // ---------- renderer / scene ----------
 let renderer;
@@ -222,6 +218,7 @@ if (renderer) {
           let ux, uy;
           if (stack) { ux = (i % 2 ? 1 : -1) * 0.5; uy = 1 - 2 * i / Math.max(1, n - 1); }
           else if (n === 4) { ux = i % 2 ? 1 : -1; uy = i < 2 ? 1 : -1; }          // 2×2 corners, reading order
+          else if (n === 3) { [ux, uy] = [[-1, 0.7], [1, 0.7], [0, -1]][i]; }      // two up, one down
           else { const ang = -Math.PI / 2 + (i + 0.5) * Math.PI * 2 / n; ux = Math.cos(ang); uy = -Math.sin(ang); }
           a.x = ux * cfg.rx * kx; a.y = uy * cfg.ry * ky; a.z = cfg.z;
         });
