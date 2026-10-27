@@ -255,7 +255,7 @@ if (renderer) {
       } else {
         items.forEach((a, i) => {
           const u = (i + 0.5) / n;
-          a.ti = i; a.z = lerp(cfg.z0, cfg.z1, u); a.x = CX + (i % 2 ? -11 : 15) * kx; a.y = curveYAtZ(a.z) + 9; // above the curve, alternating right / left / right
+          a.ti = i; a.z = lerp(cfg.z0, cfg.z1, u); a.x = i % 2 ? CX - 11 * kx : 14 + 3 * kx; a.y = curveYAtZ(a.z) + 9; // right cards sit right of the camera (x=14 in this chapter) so they drift out to the right, left ones to the left
         });
         for (const a of anchors) if (a.title && a.layer === L) { a.x = 0; a.y = curveY(0) + 9; a.z = cfg.z0 - 10; }
       }
