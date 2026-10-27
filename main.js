@@ -366,8 +366,17 @@ if (renderer) {
 // ---------- backward pass spine: light the node of the section in view ----------
 {
   const secs = $$('.portfolio section');
-  const io = new IntersectionObserver((es) => es.forEach((e) => e.target.classList.toggle('active', e.isIntersecting)), { rootMargin: '-40% 0px -50% 0px' });
-  secs.forEach((sec) => io.observe(sec));
+  // active = last section whose top is above the 45% line; at the very bottom it is always the last one,
+  // which could otherwise never reach that line
+  const pick = () => {
+    const line = scrollY + innerHeight * 0.45;
+    const atBottom = scrollY + innerHeight >= document.documentElement.scrollHeight - 4;
+    let cur = null;
+    for (const s of secs) if (s.getBoundingClientRect().top + scrollY <= line) cur = s;
+    if (atBottom) cur = secs[secs.length - 1];
+    for (const s of secs) s.classList.toggle('active', s === cur);
+  };
+  addEventListener('scroll', pick, { passive: true }); addEventListener('resize', pick); pick();
   // falling gradient dots: a handful, each on its own period and delay
   const spine = $('.spine');
   const sizeSpine = () => spine && spine.style.setProperty('--spine-h', spine.offsetHeight + 'px'); // dots fall the full height
