@@ -363,8 +363,8 @@ if (renderer) {
   frame();
 }
 
-// "Skip intro" lands below the pinned section even with smooth scroll
+// "Skip intro" lands on the name card at the end of the flight (p = 1), not past it
 $('[data-skip]').addEventListener('click', (e) => {
   e.preventDefault();
-  scrollTo({ top: dive.offsetTop + dive.offsetHeight, behavior: 'smooth' });
+  scrollTo({ top: dive.offsetTop + dive.offsetHeight - innerHeight, behavior: 'smooth' });
 });
