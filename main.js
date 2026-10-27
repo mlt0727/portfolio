@@ -30,9 +30,9 @@ const CFG = {
 // ring: items on an ellipse (rx, ry) facing the camera. path: items along the loss curve.
 const LAYERS = {
   p: { z: -228, kind: 'ring', rx: 17, ry: 9, size: 9, color: '#ffb45c', link: 'core' },
-  1: { z: -330, kind: 'ring', rx: 18, ry: 10, size: 5, color: '#4fe3ff', link: 'core' },   // skills
+  1: { z: -330, kind: 'ring', rx: 18, ry: 10, size: 5, color: '#4fe3ff', link: 'p' },      // skills, fed by the education ring
   2: { z: -400, kind: 'ring', rx: 18, ry: 10, size: 5, color: '#4fe3ff', link: '1' },      // skills
-  t: { z0: -470, z1: -620, kind: 'path', size: 7, color: '#8b5cf6', link: 'chain' },       // education = training
+  t: { z0: -470, z1: -620, kind: 'path', size: 7, color: '#8b5cf6', link: ['2', 'chain'] }, // experience = training, fed by hidden layer 2
   e: { z: -690, kind: 'ring', rx: 17, ry: 9, size: 8, color: '#ffb45c', link: 't' },       // experience = output
 };
 const curveY = (u) => 14 - 24 * (1 - Math.exp(-2.6 * u)); // "training loss" shape, y over 0..1
@@ -214,16 +214,17 @@ if (renderer) {
   const edges = []; // [ai, bi, pulses?]
   for (const [L, cfg] of Object.entries(LAYERS)) {
     const mine = byLayer[L] || [];
-    if (cfg.link === 'chain') { for (let i = 1; i < mine.length; i++) edges.push([mine[i - 1], mine[i], false]); continue; }
-    const from = byLayer[cfg.link] || [];
-    for (const a of from) for (const b of mine) edges.push([a, b, L !== 'p']);
+    for (const link of [].concat(cfg.link)) {
+      if (link === 'chain') { for (let i = 1; i < mine.length; i++) edges.push([mine[i - 1], mine[i], false]); continue; }
+      for (const a of byLayer[link] || []) for (const b of mine) edges.push([a, b, L !== 'p']);
+    }
   }
   const NA = anchors.length;
   const apos = new Float32Array(NA * 3), acol = new Float32Array(NA * 3), asize = new Float32Array(NA);
   anchors.forEach((a, i) => { const c = new THREE.Color(LAYERS[a.layer]?.color || '#fff'); acol.set([c.r, c.g, c.b], i * 3); asize[i] = a.size; });
   const anchorPts = mkPoints(apos, acol, asize);
   // halo behind every anchor node: same positions, ~3.5x the size, dimmer colour; with additive blending it reads as a glow
-  const anchorGlow = mkPoints(apos, acol.map((v) => v * 0.5), asize.map((v) => v * 3.5), glowMat);
+  const anchorGlow = mkPoints(apos, acol.map((v, i) => v * ('pte'.includes(anchors[Math.floor(i / 3)].layer) ? 0.85 : 0.3)), asize.map((v) => v * 3.5), glowMat);
   const epos = new Float32Array(edges.length * 6), ecol = new Float32Array(edges.length * 6);
   edges.forEach(([a, b], i) => {
     const ca = a === 0 ? C_WHITE : new THREE.Color(LAYERS[anchors[a].layer].color), cb = new THREE.Color(LAYERS[anchors[b].layer].color);
@@ -234,10 +235,10 @@ if (renderer) {
 
   // signal pulses travelling along network edges
   const pulseEdges = edges.map((e, i) => (e[2] ? i : -1)).filter((i) => i >= 0);
-  const NPULSE = reduced ? 0 : 180;
+  const NPULSE = reduced ? 0 : 120;
   const pulses = Array.from({ length: NPULSE }, () => ({ e: pulseEdges[Math.floor(Math.random() * pulseEdges.length)], t: Math.random(), v: 0.25 + Math.random() * 0.35 }));
-  const ppos = new Float32Array(NPULSE * 3), pcol = new Float32Array(NPULSE * 3).map((_, i) => [C_WHITE.r, C_WHITE.g, C_WHITE.b][i % 3]);
-  const pulsePts = mkPoints(ppos, pcol, new Float32Array(NPULSE).fill(4.2));
+  const ppos = new Float32Array(NPULSE * 3), pcol = new Float32Array(NPULSE * 3).map((_, i) => [C_CYAN.r, C_CYAN.g, C_CYAN.b][i % 3] * 0.75);
+  const pulsePts = mkPoints(ppos, pcol, new Float32Array(NPULSE).fill(2.8));
 
   // place anchors for the current aspect ratio and refresh neuron/edge buffers
   const layout = (aspect) => {
