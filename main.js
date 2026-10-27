@@ -42,7 +42,7 @@ const KEYS = [
   [0.18, -193, 0], [0.25, -193, 0],      // projects
   [0.31, -295, 0], [0.35, -295, 0],      // hidden layer 1
   [0.40, -365, 0], [0.44, -365, 0],      // hidden layer 2
-  [0.50, -435, 14], [0.60, -545, curveY(0.45) + 8], [0.70, -620, curveY(1) + 8], // training curve
+  [0.50, -435, 12], [0.60, -545, curveY(0.45) + 6], [0.70, -620, curveY(1) + 6], // training curve
   [0.80, -655, 0], [1.00, -655, 0],      // output layer: read until 0.90, veil 0.90–1.0 (style.css)
 ];
 const PHASES = [[0.12, '00 · diving in'], [0.29, '01 Input layer · education'], [0.47, '02 Hidden layers · skills'], [0.74, '03 Training · experience'], [1.01, '04 Output layer · projects']];
@@ -163,11 +163,13 @@ if (renderer) {
   // training loss curves (education chapter): glowing tubes, "train" orange / "val" violet,
   // a floor grid with one tick per epoch, and a spark running down the train curve
   const T = LAYERS.t, NL = 160, FLOOR = -15, CX = -7; // curve runs left of centre, cards on the right
+  const CS = T.z0 + 25, CE = T.z1 - 45;                 // curve starts a little before the first epoch and runs past the last
+  const curveYAtZ = (zz) => curveY(clamp((CS - zz) / (CS - CE), 0, 1));
   const mkCurve = (color, dy, wobble, radius, opacity) => {
     const pts = [];
     for (let i = 0; i < NL; i++) {
       const u = i / (NL - 1);
-      pts.push(new THREE.Vector3(CX, curveY(u) + dy + wobble * Math.sin(u * 40) * (0.3 + u), lerp(T.z0 - 25, T.z1 + 25, u)));
+      pts.push(new THREE.Vector3(CX, curveY(u) + dy + wobble * Math.sin(u * 40) * (0.3 + u), lerp(CS, CE, u)));
     }
     const curve = new THREE.CatmullRomCurve3(pts);
     const mesh = new THREE.Mesh(new THREE.TubeGeometry(curve, NL, radius, 6, false),
@@ -185,9 +187,9 @@ if (renderer) {
   { // floor grid: baseline, cross rungs every 40 units, a tick up to the curve at each epoch
     const g = [], gcol = [], nEp = $$('[data-layer="t"]').length;
     const push = (a, b) => { g.push(...a, ...b); gcol.push(C_CYAN.r, C_CYAN.g, C_CYAN.b, C_CYAN.r, C_CYAN.g, C_CYAN.b); };
-    for (const x of [CX - 14, CX, CX + 14]) push([x, FLOOR, T.z0 - 25], [x, FLOOR, T.z1 + 25]);
-    for (let z = T.z0 - 20; z >= T.z1 + 20; z -= 40) push([CX - 14, FLOOR, z], [CX + 14, FLOOR, z]);
-    for (let i = 0; i < nEp; i++) { const u = (i + 0.5) / nEp, z = lerp(T.z0, T.z1, u); push([CX, FLOOR, z], [CX, curveY(u), z]); }
+    for (const x of [CX - 14, CX, CX + 14]) push([x, FLOOR, CS], [x, FLOOR, CE]);
+    for (let z = CS - 20; z >= CE + 20; z -= 40) push([CX - 14, FLOOR, z], [CX + 14, FLOOR, z]);
+    for (let i = 0; i < nEp; i++) { const z = lerp(T.z0, T.z1, (i + 0.5) / nEp); push([CX, FLOOR, z], [CX, curveYAtZ(z), z]); }
     mkLines(new Float32Array(g), new Float32Array(gcol), 0.28);
   }
   const spark = mkPoints(new Float32Array(3), new Float32Array([C_WHITE.r, C_WHITE.g, C_WHITE.b]), new Float32Array([8]));
@@ -249,11 +251,11 @@ if (renderer) {
           else { const ang = -Math.PI / 2 + (i + 0.5) * Math.PI * 2 / n; ux = Math.cos(ang); uy = -Math.sin(ang); }
           a.x = ux * cfg.rx * kx; a.y = uy * cfg.ry * ky; a.z = cfg.z;
         });
-        for (const a of anchors) if (a.title && a.layer === L) { a.x = 0; a.y = cfg.ry * ky + (stack ? 10 : 7); a.z = cfg.z; }
+        for (const a of anchors) if (a.title && a.layer === L) { a.x = 0; a.y = cfg.ry * ky + (stack ? 10 : n === 4 ? 11.5 : 7); a.z = cfg.z; }
       } else {
         items.forEach((a, i) => {
           const u = (i + 0.5) / n;
-          a.x = 9 * kx; a.y = curveY(u) + 1.5; a.z = lerp(cfg.z0, cfg.z1, u);
+          a.ti = i; a.x = CX; a.z = lerp(cfg.z0, cfg.z1, u); a.y = curveYAtZ(a.z) + 1.5; // 3D epoch marker on the curve; the HTML card itself follows the camera
         });
         for (const a of anchors) if (a.title && a.layer === L) { a.x = 0; a.y = curveY(0) + 9; a.z = cfg.z0 - 10; }
       }
@@ -303,8 +305,12 @@ if (renderer) {
     spd = lerp(spd, Math.abs(z - lastZ) / Math.max(dt, 1e-3), 0.12); lastZ = z; // smoothed camera speed
     const speed = spd;
     fov = lerp(fov, 60 + 16 * clamp(speed / 150, 0, 1), 0.1);
-    camera.position.set(sm.x * 6, y - sm.y * 4, z);
-    camera.lookAt(sm.x * 2, y - sm.y * 2, z - 60);
+    // training chapter: sit a little right of the loss curve and look at a point on it ~50 units ahead,
+    // so the curve stays in frame on the left for the whole descent instead of dropping out below
+    const w = smooth(((T.z0 + 40) - z) / 60) * (1 - smooth(((T.z1 + 40) - z) / 40)); // out by z1-0, before the output ring fades in
+    const ly = curveYAtZ(z - 50) + 2;
+    camera.position.set(sm.x * 6 + w * 14, y - sm.y * 4, z);
+    camera.lookAt(sm.x * 2 + w * (CX - 2), lerp(y, ly, w) - sm.y * 2, z - 60);
     camera.rotation.z += 0.06 * Math.sin(p * 9);
     camera.fov = fov; camera.updateProjectionMatrix();
 
@@ -345,12 +351,27 @@ if (renderer) {
     const u = (T.z0 - z) / (T.z0 - T.z1);
     hud.loss.textContent = u > -0.2 && u < 1.3 ? (0.92 * Math.exp(-2.6 * clamp(u, 0, 1)) + 0.07).toFixed(3) : '—';
 
-    // overlays: show each element while its anchor is 10–85 units ahead of the camera
+    // overlays: show each element while its anchor is 10–85 units ahead of the camera.
+    // Training cards are the exception: one at a time, riding 42 units ahead of the camera beside the
+    // curve, switching between experiences as the descent progresses.
+    const nT = (byLayer.t || []).length, uT = clamp((T.z0 - z) / (T.z0 - T.z1), 0, 1);
+    const posT = Math.min(nT - 1e-6, uT * nT), idxT = Math.floor(posT), fT = posT - idxT;
     for (const a of anchors) {
       if (!a.el) continue;
-      const d = z - a.z, vis = smooth((d - 10) / 8) * (1 - smooth((d - 60) / 25));
-      if (vis < 0.02) { if (a.on) { a.on = false; a.el.classList.remove('on'); } continue; }
-      v.set(a.x, a.y, a.z).project(camera);
+      let vis;
+      if (a.layer === 't' && !a.title) {
+        // first card fades in with the chapter, last one fades out with it; middle ones hand over by segment
+        const fin = a.ti === 0 ? 1 : smooth(fT / 0.12), fout = a.ti === nT - 1 ? 1 : 1 - smooth((fT - 0.88) / 0.12);
+        vis = a.ti === idxT ? w * fin * fout : 0;
+        if (vis < 0.02) { if (a.on) { a.on = false; a.el.classList.remove('on'); } continue; }
+        const az = z - 42;
+        v.set(CX + 7 * Math.min(1, camera.aspect / 1.5), curveYAtZ(az) + 2, az).project(camera);
+      } else {
+        const far = a.layer === 'e' ? 45 : 60; // the output ring fades in late so its four cards never pile up at a distance
+        const d = z - a.z; vis = smooth((d - 10) / 8) * (1 - smooth((d - far) / 25));
+        if (vis < 0.02) { if (a.on) { a.on = false; a.el.classList.remove('on'); } continue; }
+        v.set(a.x, a.y, a.z).project(camera);
+      }
       const hw = a.el.offsetWidth / 2 + 8, hh = a.el.offsetHeight / 2 + 8;
       const x = clamp((v.x + 1) / 2 * innerWidth, hw, innerWidth - hw), yy = clamp((1 - v.y) / 2 * innerHeight, hh + 64, innerHeight - hh);
       a.el.style.transform = `translate(-50%,-50%) translate(${x.toFixed(1)}px,${yy.toFixed(1)}px)`;
