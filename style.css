@@ -118,7 +118,7 @@ a[href=""] { color: var(--faint); pointer-events: none; text-decoration: line-th
 /* ---------- act 6: the readable page is the backward pass ----------
    A spine runs down the left edge; each section is one layer with a node on it, and gradient dots
    fall from the top (output, Experience) through every node to the bottom (input, Contact). */
-.portfolio { position: relative; background: var(--bg); max-width: 60rem; margin: 0 auto; padding: 1.5rem 1.5rem 4rem 5rem; }
+.portfolio { position: relative; background: var(--bg); max-width: 60rem; margin: 0 auto; padding: 6rem 1.5rem 4rem 5rem; } /* top gap: nothing peeks under the name card */
 .portfolio section { position: relative; padding: 3rem 0; border-top: 1px solid rgba(230, 236, 245, 0.08); }
 .portfolio section:first-of-type { border-top: 0; }
 .portfolio section::before { /* layer node on the spine, aligned with the heading */
@@ -128,7 +128,7 @@ a[href=""] { color: var(--faint); pointer-events: none; text-decoration: line-th
 .portfolio section.active::before { background: var(--orange); border-color: var(--orange); box-shadow: 0 0 16px var(--orange); }
 .portfolio h2 { margin: 0 0 1.5rem; font-size: 0.8125rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cyan); }
 .portfolio h2 .layer-no { display: block; color: var(--orange); font-size: 0.7rem; margin-bottom: 0.4rem; opacity: 0.8; }
-.spine { position: absolute; left: 1.5rem; top: 0; bottom: 3rem; width: 0; }
+.spine { position: absolute; left: 1.5rem; top: 4.5rem; bottom: 3rem; width: 0; }
 .spine-line { position: absolute; left: -0.5px; top: 1.5rem; bottom: 1.5rem; width: 1px; background: linear-gradient(rgba(79, 227, 255, 0), rgba(79, 227, 255, 0.35) 8%, rgba(79, 227, 255, 0.35) 92%, rgba(79, 227, 255, 0)); }
 .spine-end { position: absolute; left: -0.45rem; bottom: 1rem; width: 0.9rem; height: 0.9rem; border-radius: 50%; background: var(--orange); box-shadow: 0 0 22px var(--orange), 0 0 60px rgba(255, 180, 92, 0.35); animation: breathe 2.4s ease-in-out infinite; }
 .spine-cap { position: absolute; left: 50%; transform: translateX(-50%); top: 0; color: var(--faint); white-space: nowrap; }
