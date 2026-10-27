@@ -86,7 +86,7 @@ a[href=""] { color: var(--faint); pointer-events: none; text-decoration: line-th
   background: rgba(8, 12, 24, 0.7); border: 1px solid rgba(79, 227, 255, 0.35); color: var(--fg);
   box-shadow: 0 0 18px rgba(79, 227, 255, 0.18);
 }
-.layer-title { margin: 0; font-size: clamp(1.4rem, 2.6vw, 2.6rem); font-weight: 800; letter-spacing: -0.01em; text-align: center; white-space: nowrap; text-shadow: 0 0 24px rgba(79, 227, 255, 0.35); }
+.layer-title { z-index: 2; margin: 0; font-size: clamp(1.4rem, 2.6vw, 2.6rem); font-weight: 800; letter-spacing: -0.01em; text-align: center; white-space: nowrap; text-shadow: 0 0 24px rgba(79, 227, 255, 0.35); }
 .layer-title .mono { display: block; color: var(--cyan); font-weight: 500; margin-bottom: 0.25rem; }
 @media (max-width: 720px) {
   .card { width: 9.5rem; padding: 0.6rem 0.75rem; }

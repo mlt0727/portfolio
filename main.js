@@ -255,7 +255,7 @@ if (renderer) {
       } else {
         items.forEach((a, i) => {
           const u = (i + 0.5) / n;
-          a.ti = i; a.x = CX; a.z = lerp(cfg.z0, cfg.z1, u); a.y = curveYAtZ(a.z) + 1.5; // 3D epoch marker on the curve; the HTML card itself follows the camera
+          a.ti = i; a.z = lerp(cfg.z0, cfg.z1, u); a.x = CX + (i % 2 ? -11 : 15) * kx; a.y = curveYAtZ(a.z) + 9; // above the curve, alternating right / left / right
         });
         for (const a of anchors) if (a.title && a.layer === L) { a.x = 0; a.y = curveY(0) + 9; a.z = cfg.z0 - 10; }
       }
@@ -352,29 +352,29 @@ if (renderer) {
     hud.loss.textContent = u > -0.2 && u < 1.3 ? (0.92 * Math.exp(-2.6 * clamp(u, 0, 1)) + 0.07).toFixed(3) : '—';
 
     // overlays: show each element while its anchor is 10–85 units ahead of the camera.
-    // Training cards are the exception: one at a time, riding 42 units ahead of the camera beside the
-    // curve, switching between experiences as the descent progresses.
-    const nT = (byLayer.t || []).length, uT = clamp((T.z0 - z) / (T.z0 - T.z1), 0, 1);
-    const posT = Math.min(nT - 1e-6, uT * nT), idxT = Math.floor(posT), fT = posT - idxT;
+    // Training cards fly past instead: they appear small and far (~110 units), grow as the camera
+    // approaches (CSS scale ~ 1/distance), and at ~6 units they are large and fade out behind.
     for (const a of anchors) {
       if (!a.el) continue;
-      let vis;
-      if (a.layer === 't' && !a.title) {
-        // first card fades in with the chapter, last one fades out with it; middle ones hand over by segment
-        const fin = a.ti === 0 ? 1 : smooth(fT / 0.12), fout = a.ti === nT - 1 ? 1 : 1 - smooth((fT - 0.88) / 0.12);
-        vis = a.ti === idxT ? w * fin * fout : 0;
+      let vis, sc = 1;
+      if (a.layer === 't' && a.title) {
+        vis = w; // the chapter heading stays pinned at the top for the whole descent
         if (vis < 0.02) { if (a.on) { a.on = false; a.el.classList.remove('on'); } continue; }
-        // screen-space: upper third, alternating right / left / right so consecutive cards cross over
-        v.set(a.ti % 2 ? -0.44 : 0.44, 0.34, 0);
+        v.set(0, 0.8, 0);
+      } else if (a.layer === 't') {
+        const d = z - a.z; vis = smooth((d - 10) / 14) * (1 - smooth((d - 72) / 22)); // big and fading by the time it passes
+        if (vis < 0.02) { if (a.on) { a.on = false; a.el.classList.remove('on'); } continue; }
+        v.set(a.x, a.y, a.z).project(camera);
+        sc = clamp(40 / d, 0.5, 1.35);
       } else {
         const far = a.layer === 'e' ? 45 : 60; // the output ring fades in late so its four cards never pile up at a distance
         const d = z - a.z; vis = smooth((d - 10) / 8) * (1 - smooth((d - far) / 25));
         if (vis < 0.02) { if (a.on) { a.on = false; a.el.classList.remove('on'); } continue; }
         v.set(a.x, a.y, a.z).project(camera);
       }
-      const hw = a.el.offsetWidth / 2 + 8, hh = a.el.offsetHeight / 2 + 8;
+      const hw = a.el.offsetWidth * sc / 2 + 8, hh = a.el.offsetHeight * sc / 2 + 8; // keep the whole (scaled) card on screen
       const x = clamp((v.x + 1) / 2 * innerWidth, hw, innerWidth - hw), yy = clamp((1 - v.y) / 2 * innerHeight, hh + 64, innerHeight - hh);
-      a.el.style.transform = `translate(-50%,-50%) translate(${x.toFixed(1)}px,${yy.toFixed(1)}px)`;
+      a.el.style.transform = `translate(-50%,-50%) translate(${x.toFixed(1)}px,${yy.toFixed(1)}px) scale(${sc.toFixed(3)})`;
       a.el.style.opacity = vis.toFixed(2);
       if (!a.on) { a.on = true; a.el.classList.add('on'); }
     }
