@@ -24,7 +24,7 @@ const sizeSkip = () => {
   nav.classList.remove('measure');
 };
 sizeSkip(); addEventListener('resize', sizeSkip);
-const hud = { phase: $('[data-phase]'), depth: $('[data-depth]'), nodes: $('[data-nodes]'), loss: $('[data-loss]') };
+const hud = { phase: $('[data-phase]'), depth: $('[data-depth]'), speed: $('[data-speed]'), loss: $('[data-loss]') };
 
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const small = matchMedia('(max-width: 720px)').matches;
@@ -243,7 +243,6 @@ if (renderer) {
     ecol.set([ca.r, ca.g, ca.b, cb.r, cb.g, cb.b], i * 6);
   });
   const edgeLines = mkLines(epos, ecol, 0.4);
-  hud.nodes.textContent = String(N + NC + NA);
 
   // signal pulses travelling along network edges
   const pulseEdges = edges.map((e, i) => (e[2] ? i : -1)).filter((i) => i >= 0);
@@ -366,6 +365,7 @@ if (renderer) {
 
     // HUD
     hud.depth.textContent = p.toFixed(2);
+    hud.speed.textContent = String(Math.round(spd)); // smoothed camera speed, scene units per second
     const phase = PHASES.find(([end]) => p < end)[1];
     if (hud.phase.textContent !== phase) hud.phase.textContent = phase;
     const u = (T.z0 - z) / (T.z0 - T.z1);
