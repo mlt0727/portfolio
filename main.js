@@ -60,14 +60,16 @@ const PHASES = [[0.11, '00 · diving in'], [0.26, '01 Input layer · education']
 // ---------- renderer / scene ----------
 let renderer;
 try {
-  renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, powerPreference: 'high-performance' });
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: 'high-performance' });
 } catch (e) {
   console.warn('WebGL unavailable, skipping 3D intro', e);
   canvas.remove();
 }
 
 if (renderer) {
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
+  // phones: few CSS pixels but DPR 3, so the 1px network lines blur at a 1.5 cap; spend the full ratio
+  // there (pixel count stays small) and keep the cap on big screens
+  renderer.setPixelRatio(Math.min(devicePixelRatio, innerWidth * innerHeight < 500000 ? 3 : 1.5));
   renderer.setClearColor(0x05070f, 1);
   const scene = new THREE.Scene();
   scene.fog = new THREE.Fog(0x05070f, 60, 230);
@@ -252,11 +254,13 @@ if (renderer) {
 
   // place anchors for the current aspect ratio and refresh neuron/edge buffers
   const layout = (aspect) => {
-    const kx = Math.min(1, aspect / 1.5), ky = aspect < 1 ? 1.5 : 1;
+    const kx = Math.min(1, aspect / 1.5), narrow = aspect < 1;
     for (const [L, cfg] of Object.entries(LAYERS)) {
       const items = (byLayer[L] || []).map((i) => anchors[i]), n = items.length;
       if (cfg.kind === 'ring') {
-        const stack = aspect < 1.3 && n !== 4 && items[0]?.el.classList.contains('card'); // narrow views: big cards go in a column
+        const card = items[0]?.el.classList.contains('card');
+        const stack = aspect < 1.3 && n !== 4 && card; // narrow views: big cards go in a column
+        const ky = narrow ? (card ? 1.5 : 1.15) : 1;   // phones: tall card columns, but keep tag rings inside the view so the title clears them
         items.forEach((a, i) => {
           let ux, uy;
           if (stack) { ux = (i % 2 ? 1 : -1) * 0.5; uy = 0.75 - 1.85 * i / Math.max(1, n - 1); }
@@ -265,7 +269,7 @@ if (renderer) {
           else { const ang = -Math.PI / 2 + (i + 0.5) * Math.PI * 2 / n; ux = Math.cos(ang); uy = -Math.sin(ang); }
           a.x = ux * cfg.rx * kx; a.y = uy * cfg.ry * ky; a.z = cfg.z;
         });
-        for (const a of anchors) if (a.title && a.layer === L) { a.x = 0; a.y = cfg.ry * ky + (stack ? 10 : n === 4 ? 11.5 : 7); a.z = cfg.z; }
+        for (const a of anchors) if (a.title && a.layer === L) { a.x = 0; a.y = narrow && n === 4 ? 0 : cfg.ry * ky + (stack ? 10 : n === 4 ? 11.5 : 7); a.z = cfg.z; } // phones: the 2×2 card layout leaves the middle empty, so the title goes there
       } else {
         items.forEach((a, i) => {
           const u = (i + 0.5) / n;

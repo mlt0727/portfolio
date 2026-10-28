@@ -47,7 +47,7 @@ a[href=""] { color: var(--faint); pointer-events: none; text-decoration: line-th
   pointer-events: none;
 }
 .nav-skip.on { pointer-events: auto; }
-@media (max-width: 720px) { .nav-links { display: none; } }
+@media (max-width: 720px) { .nav-links { display: none; } .nav-github { transform: none; } }
 
 /* ---------- acts 1–5 ---------- */
 .dive { height: 950vh; position: relative; }
@@ -97,9 +97,10 @@ a[href=""] { color: var(--faint); pointer-events: none; text-decoration: line-th
 .layer-title { z-index: 2; margin: 0; font-size: clamp(1.4rem, 2.6vw, 2.6rem); font-weight: 800; letter-spacing: -0.01em; text-align: center; white-space: nowrap; text-shadow: 0 0 24px rgba(79, 227, 255, 0.35); }
 .layer-title .mono { display: block; color: var(--cyan); font-weight: 500; margin-bottom: 0.25rem; }
 @media (max-width: 720px) {
-  .card { width: 9.5rem; padding: 0.6rem 0.75rem; }
+  .card { width: 10.5rem; padding: 0.6rem 0.75rem; }
   .card h3 { font-size: 0.875rem; }
-  .card p { display: none; }
+  .card-tag { font-size: 0.62rem; letter-spacing: 0.06em; }
+  .card p { font-size: 0.7rem; line-height: 1.35; margin: 0.2rem 0 0.35rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
   .card-links { gap: 0.5rem; font-size: 0.75rem; }
 }
 
@@ -148,7 +149,12 @@ a[href=""] { color: var(--faint); pointer-events: none; text-decoration: line-th
 }
 @keyframes fall { 0% { transform: translateY(0); opacity: 0; } 6% { opacity: 1; } 94% { opacity: 1; } 100% { transform: translateY(calc(var(--spine-h, 2000px) - 3rem)); opacity: 0; } }
 @keyframes breathe { 50% { transform: scale(1.25); } }
-@media (max-width: 600px) { .portfolio { padding-left: 1.5rem; } .spine, .portfolio section::before { display: none; } }
+@media (max-width: 600px) {
+  .portfolio { padding-left: 3rem; padding-right: 1rem; }
+  .spine { left: 1.1rem; }
+  .portfolio section::before { left: calc(-1.9rem - 0.3rem); }
+  .spine-cap { left: 0; transform: none; }
+}
 .portfolio h3 { margin: 0 0 0.25rem; font-size: 1.125rem; }
 .portfolio p { margin: 0; color: var(--faint); }
 .row { display: grid; grid-template-columns: 8.75rem 1fr; gap: 1rem; margin-bottom: 1.75rem; }
