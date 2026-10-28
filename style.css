@@ -160,9 +160,15 @@ a[href=""] { color: var(--faint); pointer-events: none; text-decoration: line-th
 .chips { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
 .chips li { padding: 0.4rem 0.75rem; border: 1px solid rgba(79, 227, 255, 0.25); border-radius: 999px; font-size: 0.875rem; }
 footer { padding-top: 3rem; color: var(--faint); }
+
+/* scroll reveal on the readable page: items start a little low and tilted back, then settle as they
+   enter the viewport (main.js adds .in via IntersectionObserver, with a small stagger per item) */
+.portfolio .reveal { opacity: 0; transform: perspective(60rem) translateY(1.2rem) rotateX(7deg); transform-origin: 50% 0; transition: opacity 0.55s ease, transform 0.65s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.portfolio .reveal.in { opacity: 1; transform: none; }
 @media (max-width: 600px) { .row { grid-template-columns: 1fr; gap: 0.25rem; } }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .hero .hint { animation: none; }
+  .portfolio .reveal { opacity: 1; transform: none; transition: none; }
 }

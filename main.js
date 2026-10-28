@@ -415,6 +415,15 @@ if (renderer) {
     for (const s of secs) s.classList.toggle('active', s === cur);
   };
   addEventListener('scroll', pick, { passive: true }); addEventListener('resize', pick); pick();
+  // scroll reveal: headings, rows, cards, chips and links settle in as they enter the viewport
+  const items = $$('#portfolio h2, #portfolio .row, #portfolio .grid article, #portfolio .chips li, #portfolio .links.big, #portfolio footer');
+  const reveal = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); reveal.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px', threshold: 0.1 });
+  items.forEach((el) => {
+    el.classList.add('reveal');
+    const sib = [...el.parentElement.children].filter((c) => c.classList.contains('reveal')); // stagger within a group
+    el.style.transitionDelay = Math.min(sib.indexOf(el), 8) * 60 + 'ms';
+    reveal.observe(el);
+  });
   // falling gradient dots: a handful, each on its own period and delay
   const spine = $('.spine');
   const sizeSpine = () => spine && spine.style.setProperty('--spine-h', spine.offsetHeight + 'px'); // dots fall the full height
