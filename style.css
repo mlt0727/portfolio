@@ -35,12 +35,18 @@ a[href=""] { color: var(--faint); pointer-events: none; text-decoration: line-th
 .nav-links { display: flex; gap: 1.1rem; margin-left: auto; }
 .nav-links a { color: var(--faint); font-size: 0.875rem; }
 .nav-links a:hover { color: var(--fg); text-decoration: none; }
+/* between the last project and the name card (p 0.85–0.95) the links slide right into the space
+   the Skip button leaves behind; --skip-w is measured by main.js */
+.nav-links, .nav-github { transform: translateX(calc(var(--skip-w, 0px) * clamp(0, (var(--p) - 0.85) * 10, 1))); }
+.nav.measure .nav-links, .nav.measure .nav-github { transform: none; }
 .nav-github { display: inline-flex; color: var(--faint); line-height: 0; }
 .nav-github:hover { color: var(--fg); text-decoration: none; }
 .nav-skip {
   font-size: 0.8rem; padding: 0.4rem 0.75rem; border: 1px solid rgba(79, 227, 255, 0.35); border-radius: 999px;
   opacity: calc(1 - var(--p) * 1.4);
+  pointer-events: none;
 }
+.nav-skip.on { pointer-events: auto; }
 @media (max-width: 720px) { .nav-links { display: none; } }
 
 /* ---------- acts 1–5 ---------- */

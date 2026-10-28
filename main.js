@@ -14,6 +14,16 @@ const smooth = (t) => { t = clamp(t, 0, 1); return t * t * (3 - 2 * t); };
 const dive = $('[data-dive]');
 const canvas = $('[data-canvas]');
 const outro = $('[data-outro]');
+const skip = $('[data-skip]');
+// how far the links must slide right to end where the Skip button's right edge is; measured with the
+// slide temporarily off so a resize mid-flight still gives the untranslated distance
+const sizeSkip = () => {
+  const nav = skip.parentElement, git = $('.nav-github');
+  nav.classList.add('measure');
+  document.documentElement.style.setProperty('--skip-w', (skip.getBoundingClientRect().right - git.getBoundingClientRect().right) + 'px');
+  nav.classList.remove('measure');
+};
+sizeSkip(); addEventListener('resize', sizeSkip);
 const hud = { phase: $('[data-phase]'), depth: $('[data-depth]'), nodes: $('[data-nodes]'), loss: $('[data-loss]') };
 
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -302,6 +312,7 @@ if (renderer) {
     if (p !== lastP) {
       lastP = p; document.documentElement.style.setProperty('--p', p.toFixed(4));
       outro.classList.toggle('on', p > 0.95); // landing card becomes clickable once it is readable
+      skip.classList.toggle('on', p < 0.7);  // skip button is clickable only while visible
     }
 
     // camera: keyframed z/y, mouse parallax, fov widens with speed
