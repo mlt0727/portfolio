@@ -389,7 +389,7 @@ if (renderer) {
         sc = clamp(40 / d, 0.5, 1.35);
       } else {
         const far = a.layer === 'e' ? 45 : 60; // the output ring fades in late so its four cards never pile up at a distance
-        const d = z - a.z; vis = smooth((d - 10) / 8) * (1 - smooth((d - far) / 25));
+        const d = z - a.z; vis = smooth((d - 10) / 8) * (1 - smooth((d - far) / 15)); // fade in over 15 units, not 25: less time spent half-visible
         if (vis < 0.02) { if (a.on) { a.on = false; a.el.classList.remove('on'); } continue; }
         v.set(a.x, a.y, a.z).project(camera);
       }
