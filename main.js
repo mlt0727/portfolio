@@ -307,13 +307,13 @@ if (renderer) {
     requestAnimationFrame(frame);
     const top = dive.offsetTop, h = dive.offsetHeight - innerHeight;
     const p = clamp((scrollY - top) / Math.max(1, h), 0, 1);
-    if (scrollY > top + dive.offsetHeight) return; // intro scrolled away: idle
-    const dt = Math.min(clock.getDelta(), 0.05); elapsed += dt;
-    if (p !== lastP) {
+    if (p !== lastP) {   // before the idle return, so a page loaded past the intro still gets --p = 1
       lastP = p; document.documentElement.style.setProperty('--p', p.toFixed(4));
       outro.classList.toggle('on', p > 0.95); // landing card becomes clickable once it is readable
       skip.classList.toggle('on', p < 0.7);  // skip button is clickable only while visible
     }
+    if (scrollY > top + dive.offsetHeight) return; // intro scrolled away: idle
+    const dt = Math.min(clock.getDelta(), 0.05); elapsed += dt;
 
     // camera: keyframed z/y, mouse parallax, fov widens with speed
     const { z, y } = camAt(p);

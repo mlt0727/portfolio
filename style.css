@@ -155,6 +155,12 @@ a[href=""] { color: var(--faint); pointer-events: none; text-decoration: line-th
 .when { color: var(--faint); padding-top: 0.25rem; }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); gap: 1rem; }
 .grid article { padding: 1.1rem; border: 1px solid rgba(230, 236, 245, 0.1); border-radius: 0.6rem; }
+.grid article.big { grid-column: 1 / -1; }
+.grid article.big h3 span { display: inline-block; margin-left: 0.6rem; font-size: 0.75rem; font-weight: 400; letter-spacing: 0.08em; text-transform: uppercase; vertical-align: middle; color: var(--faint); }
+.big-body { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.big-body .did { margin: 0.4rem 0 0; padding-left: 1.1rem; }
+.big-body .did li { margin: 0.25rem 0; color: var(--faint); }
+@media (max-width: 700px) { .big-body { grid-template-columns: 1fr; gap: 0.5rem; } }
 .links { margin-top: 0.6rem !important; }
 .links.big { font-size: 1.125rem; }
 .chips { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }

@@ -6,7 +6,7 @@
   <title>Lingtong Meng — Portfolio</title>
   <meta name="description" content="Lingtong Meng — Data Science & AI student at FIU. Turning Complex Problems into Intelligent Solutions." />
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?v=3" />
   <script type="importmap">
     {"imports": {"three": "./vendor/three.module.js"}}
   </script>
@@ -72,22 +72,26 @@
         <!-- 03 hidden layers: skills -->
         <h2 class="layer-title" data-title="1"><span class="mono">hidden layer 01</span>Languages &amp; Frameworks</h2>
         <span class="tag" data-layer="1">Python</span>
+        <span class="tag" data-layer="1">TypeScript / JavaScript</span>
         <span class="tag" data-layer="1">Java</span>
         <span class="tag" data-layer="1">C++</span>
+        <span class="tag" data-layer="1">C#</span>
         <span class="tag" data-layer="1">SQL</span>
-        <span class="tag" data-layer="1">JavaScript</span>
-        <span class="tag" data-layer="1">HTML / CSS</span>
+        <span class="tag" data-layer="1">React</span>
+        <span class="tag" data-layer="1">FastAPI</span>
         <span class="tag" data-layer="1">Flask</span>
         <span class="tag" data-layer="1">Streamlit</span>
 
         <h2 class="layer-title" data-title="2"><span class="mono">hidden layer 02</span>Data, Cloud &amp; Tools</h2>
         <span class="tag" data-layer="2">Pandas</span>
-        <span class="tag" data-layer="2">Matplotlib</span>
+        <span class="tag" data-layer="2">scikit-learn</span>
         <span class="tag" data-layer="2">Plotly</span>
         <span class="tag" data-layer="2">MySQL</span>
+        <span class="tag" data-layer="2">MongoDB</span>
+        <span class="tag" data-layer="2">Neon / Supabase</span>
         <span class="tag" data-layer="2">AWS EC2</span>
         <span class="tag" data-layer="2">Docker</span>
-        <span class="tag" data-layer="2">Git</span>
+        <span class="tag" data-layer="2">Unity</span>
         <span class="tag" data-layer="2">Vercel</span>
 
         <!-- 04 training curve: experience as epochs along the loss curve -->
@@ -111,11 +115,21 @@
         <!-- 05 output layer: projects, what the network produces -->
         <h2 class="layer-title" data-title="e"><span class="mono">output layer</span>Projects</h2>
         <article class="card" data-layer="e">
-          <span class="card-tag mono">Web · 2026</span>
-          <h3>UKG Academy Website</h3>
-          <p>Wireframed and built pages for the Academy site redesign at FIU; maintain the HSPC and ICPC pages.</p>
+          <span class="card-tag mono">ShellHacks 2026 · Python</span>
+          <h3>Watts Happening</h3>
+          <p>Finds where planned grid projects of different utilities could coordinate. Data cleaning, proximity matching, Atlas backend and Vercel deploy.</p>
           <div class="card-links">
-            <a href="https://academy.cis.fiu.edu/" target="_blank" rel="noopener">Site</a>
+            <a href="https://watts-happening.vercel.app" target="_blank" rel="noopener">Demo</a>
+            <a href="https://github.com/mlt0727/Watts_Happening" target="_blank" rel="noopener">GitHub</a>
+            <a href="#projects">Details</a>
+          </div>
+        </article>
+        <article class="card" data-layer="e">
+          <span class="card-tag mono">Knight Hacks 2026 · Unity</span>
+          <h3>The Last Commit</h3>
+          <p>Coding adventure game: solve Python challenges to escape. Built the in-game code editor, level progression, ending and online leaderboard.</p>
+          <div class="card-links">
+            <a href="https://github.com/mlt0727/The-Last-Commit" target="_blank" rel="noopener">GitHub</a>
             <a href="#projects">Details</a>
           </div>
         </article>
@@ -129,22 +143,12 @@
           </div>
         </article>
         <article class="card" data-layer="e">
-          <span class="card-tag mono">Data · Streamlit</span>
-          <h3>Data Visualization Dashboard</h3>
-          <p>Upload a CSV, pick variables, get line, scatter, box plots and correlation heatmaps in the browser.</p>
+          <span class="card-tag mono">TypeScript · Neon</span>
+          <h3>FIU Honors Planner</h3>
+          <p>Personal FIU Honors engagement planner with database sync and reminder review.</p>
           <div class="card-links">
-            <a href="https://data-visualization-app-hacemr8z5tdxq3mtxpajjl.streamlit.app/" target="_blank" rel="noopener">Demo</a>
-            <a href="https://github.com/mlt0727/Data-Visualization-streamlit" target="_blank" rel="noopener">GitHub</a>
-            <a href="#projects">Details</a>
-          </div>
-        </article>
-        <article class="card" data-layer="e">
-          <span class="card-tag mono">Python · Requests</span>
-          <h3>12306 Train Query</h3>
-          <p>High-speed rail schedules and seat availability by station and date, parsed into Pandas tables with caching.</p>
-          <div class="card-links">
-            <a href="https://12306-ticket.streamlit.app/" target="_blank" rel="noopener">Demo</a>
-            <a href="https://github.com/mlt0727/12306-ticket" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://fiu-honors-planner.vercel.app" target="_blank" rel="noopener">Demo</a>
+            <a href="https://github.com/mlt0727/fiu-honors-planner" target="_blank" rel="noopener">GitHub</a>
             <a href="#projects">Details</a>
           </div>
         </article>
@@ -183,6 +187,42 @@
 <section id="projects">
       <h2><span class="layer-no mono">∂ output</span>Projects</h2>
       <div class="grid">
+        <article class="big">
+          <h3>Watts Happening <span class="mono faint">ShellHacks 2026 · Sperry Tech Gridlock Challenge</span></h3>
+          <div class="big-body">
+            <div>
+              <p>Python, FastAPI, React, MongoDB Atlas, scikit-learn. Interactive map and ranked list of coordination opportunities between planned transmission projects owned by different utilities, built from a nationwide dataset of 163 companies, with a Random Forest estimate for missing project costs.</p>
+              <p class="links"><a href="https://watts-happening.vercel.app" target="_blank" rel="noopener">Demo</a> · <a href="https://github.com/mlt0727/Watts_Happening" target="_blank" rel="noopener">GitHub</a></p>
+            </div>
+            <div>
+              <p class="mono faint">top contributor</p>
+              <ul class="did">
+                <li>Cleaned and merged the nationwide project dataset</li>
+                <li>Cross-utility proximity matching between substations</li>
+                <li>Dashboard wired to MongoDB Atlas through FastAPI</li>
+                <li>Vercel deployment and final readability redesign</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+        <article class="big">
+          <h3>The Last Commit <span class="mono faint">Knight Hacks 2026</span></h3>
+          <div class="big-body">
+            <div>
+              <p>Unity, C#, Python. Fantasy first-person adventure where you solve Python challenges to restore broken pillars and escape within 36 minutes, guided by Bao Bao, an AI panda companion that gives hints based on your code.</p>
+              <p class="links"><a href="https://github.com/mlt0727/The-Last-Commit" target="_blank" rel="noopener">GitHub</a></p>
+            </div>
+            <div>
+              <p class="mono faint">top contributor</p>
+              <ul class="did">
+                <li>In-game code editor with run and submit against test cases</li>
+                <li>Four-stage progression unlocking a final Dijkstra challenge</li>
+                <li>Start flow, per-level hint history, game ending</li>
+                <li>Online leaderboard with camera consent, release builds</li>
+              </ul>
+            </div>
+          </div>
+        </article>
         <article>
           <h3>Inventory &amp; CRM System</h3>
           <p>Python, Streamlit, MySQL, AWS EC2. Manages product inventory, customer records, stock movements, sales orders and maintenance records; user authentication and modular database access; deployed on EC2.</p>
@@ -261,9 +301,10 @@
 <section id="skills">
       <h2><span class="layer-no mono">∂ hidden layers</span>Skills</h2>
       <ul class="chips">
-        <li>Python</li><li>Java</li><li>C++</li><li>SQL</li><li>JavaScript</li><li>HTML / CSS</li>
-        <li>Flask</li><li>Streamlit</li><li>Pandas</li><li>Matplotlib</li><li>Plotly</li>
-        <li>MySQL</li><li>AWS EC2</li><li>Linux</li><li>Docker</li><li>Vercel</li><li>Git / GitHub</li>
+        <li>Python</li><li>TypeScript</li><li>JavaScript</li><li>Java</li><li>C++</li><li>C#</li><li>SQL</li><li>HTML / CSS</li>
+        <li>React</li><li>Vite</li><li>Tailwind CSS</li><li>FastAPI</li><li>Flask</li><li>Streamlit</li><li>Unity</li>
+        <li>Pandas</li><li>NumPy</li><li>scikit-learn</li><li>Matplotlib</li><li>Plotly</li><li>Leaflet</li><li>Jupyter</li>
+        <li>MySQL</li><li>MongoDB Atlas</li><li>Neon</li><li>Supabase</li><li>AWS EC2</li><li>Linux</li><li>Docker</li><li>Vercel</li><li>Git / GitHub</li>
       </ul>
     </section>
 
@@ -292,6 +333,6 @@
     <footer class="mono">© 2026 Lingtong Meng · Miami, FL</footer>
   </main>
 
-  <script type="module" src="main.js"></script>
+  <script type="module" src="main.js?v=4"></script>
 </body>
 </html>
