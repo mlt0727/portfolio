@@ -1,161 +1,133 @@
-# Lingtong Meng — Portfolio
+# 🧠 Lingtong Meng — Portfolio
 
-A personal portfolio built as a scroll-driven flight through a neural network.
-Scrolling down is the **forward pass**: the camera flies from the input layer
-(education) through two hidden layers (skills) and a training loss curve
-(experience) to the output layer (projects), landing on a name card. The
-readable page below is the **backward pass**: the same layers, output to input,
-with gradient dots falling down a spine on the left.
+My personal portfolio, built as a flight through a neural network.
 
-Live site: https://lingtongmeng.com
+Scroll down and you fly from the **input layer** to the **output layer**:
+education → skills → experience → projects → me. Keep scrolling and you read the
+same story backwards, like backpropagation. 🙂
 
-## The idea
+🌐 **Live:** https://lingtongmeng.com
 
-A résumé is a list. A neural network is a story about how an output came to
-be. Putting the résumé into the shape of a network makes the order mean
-something:
+![forward pass: education → skills → experience → projects](https://img.shields.io/badge/forward%20pass-education%20%E2%86%92%20skills%20%E2%86%92%20experience%20%E2%86%92%20projects-4fe3ff?style=flat-square)
+![backward pass: projects → experience → skills → education](https://img.shields.io/badge/backward%20pass-projects%20%E2%86%92%20experience%20%E2%86%92%20skills%20%E2%86%92%20education-ffb45c?style=flat-square)
+![three.js 0.173](https://img.shields.io/badge/three.js-0.173-8b5cf6?style=flat-square)
+![no build step](https://img.shields.io/badge/build-none-2ea44f?style=flat-square)
 
-| Chapter | Network metaphor | Content |
+---
+
+## 💡 The idea
+
+A résumé is a list. A neural network is a story about how a result came to be.
+So I shaped my résumé like a network:
+
+| Stop | What it is in the network | What it is in my life |
 |---|---|---|
-| 01 Input layer | the data that went in | Education |
-| 02 Hidden layers | the weights learned along the way | Skills, two layers of eight |
-| 03 Training | the loss curve going down, epoch by epoch | Experience |
-| 04 Output layer | what the network produces | Projects |
-| Output | the result | Name card with contact links |
-| Backward pass | gradients flowing back | Plain, readable profile in reverse order |
+| 🎓 Input layer | the data that goes in | Education |
+| 🧩 Hidden layers | what the network learned | Skills (two layers) |
+| 📉 Training | the loss curve going down | Experience, one epoch per role |
+| 🚀 Output layer | what the network produces | Projects |
+| 👋 Output | the result | A card with my name and links |
+| ⏪ Backward pass | gradients flowing back | A plain, readable profile in reverse |
 
-Every visitor lands on the projects first, whichever way they arrive: the
-flight ends on them, "Skip intro" jumps to the name card right after them, and
-the readable page opens with them.
+No matter how someone arrives, **projects are the first thing they see**: the
+flight ends on them, "Skip intro" lands right after them, and the readable page
+starts with them.
 
-## Design notes
+## ✨ What you'll see
 
-- **One continuous camera.** The pinned section is 950vh tall. A single
-  `requestAnimationFrame` loop reads `window.scrollY`, turns it into a progress
-  value `p` in [0, 1], writes it to the CSS variable `--p`, and moves the camera
-  along a keyframe table. Two neighbouring keyframes with the same `z` are a
-  hold, which is how each layer gets its dwell time.
-- **Content lives in HTML.** Every card and tag in the flight is an ordinary
-  element with `data-layer="…"`. `main.js` lays them out as neurons (rings, or
-  epochs along the loss curve), draws edges between consecutive layers, runs
-  signal pulses along the edges, and projects each element onto its 3D anchor
-  every frame. Adding a skill is adding one `<span class="tag" data-layer="2">`.
-- **Distance decides visibility.** An overlay element shows while its anchor is
-  10–85 units ahead of the camera and fades at both ends, so content streams
-  past instead of popping in. Experience cards go further: they scale with
-  distance so they appear small, grow, and leave the frame large.
-- **Important nodes glow, the rest stay quiet.** Education, experience and
-  project nodes get a bright halo; skill tags a subtle one; the background
-  field none. Pulses are dim cyan so the eye goes to the nodes they feed.
-- **No post-processing.** Bloom was tried and dropped: it lifted the whole
-  background to grey. Glow comes from additive geometry instead.
-- **Nothing flashes, nothing stalls.** The core cluster fades out before the
-  camera passes through it, the veil becomes a landing card rather than a blank
-  screen, and dead scroll after the last chapter is kept short.
-- **Scales with the screen.** The root font size follows viewport width (15px
-  at 1280, 26px at 4K) and every size in the stylesheet is in rem.
+- 🎥 **One long camera flight.** Scrolling moves the camera. Each layer pauses
+  for a moment so you can read it, then flies on.
+- 🃏 **Cards that float in 3D.** Every skill tag and card is pinned to a
+  glowing node in space. They fade in from far away, grow as you approach, and
+  slide past.
+- 📈 **A real loss curve.** Experience rides along a glowing orange curve that
+  goes down over time, with a little spark running down it and a live "loss"
+  number in the corner.
+- ⚡ **Data flowing between layers.** Small pulses travel along the connections
+  from each layer into the next.
+- 🪪 **A landing card** with email, GitHub, LinkedIn and résumé.
+- 🦴 **A spine on the readable page.** One node per section lights up as you
+  scroll; gradient dots keep falling down the line to the bottom.
+- ⏭️ **Skip intro** for people in a hurry.
+- 📱 Works on phones (cards stack vertically), respects "reduce motion", and
+  still shows the text if WebGL is unavailable.
 
-## Tech stack
+## 🛠️ Built with
 
-- Plain HTML, CSS and JavaScript. No framework, no build step.
-- [three.js](https://threejs.org/) 0.173 (WebGL), vendored in `vendor/` so the
-  site has no CDN dependency.
-- Points use a small custom shader (soft discs, additive blending, size by
-  distance); links and the loss curve are `LineSegments` and `TubeGeometry`.
-- The backward-pass spine is CSS animation only.
-- Hosted on Vercel as static files.
+- Plain **HTML + CSS + JavaScript**. No framework, no bundler, no build step.
+- **three.js 0.173** for the 3D scene, copied into `vendor/` so nothing depends
+  on a CDN.
+- A tiny custom shader for the glowing points; everything else is standard
+  three.js lines, tubes and sprites.
+- The spine on the readable page is pure CSS animation.
+- Hosted on **Vercel** as static files.
 
-## Features
-
-- Scroll-driven 3D flight with per-layer holds and a speed-reactive field of
-  view and streaks.
-- Four chapters of résumé content tethered to 3D anchors, plus a loss curve
-  with floor grid, epoch ticks, a travelling spark and a live loss readout.
-- Signal pulses that carry "data" from each layer into the next.
-- Landing card with email, GitHub, LinkedIn and résumé links.
-- Readable backward-pass page with a spine: one node per section that lights
-  up while the section is in view, and gradient dots falling to a terminal node.
-- "Skip intro" for recruiters; a HUD showing chapter, depth, node count and loss.
-- Responsive: phone layouts stack cards vertically; reduced-motion users get a
-  static field with no pulses or streaks.
-- Graceful fallback: if WebGL is unavailable the page still renders as text.
-
-## Project structure
+## 📁 Files
 
 ```
-index.html      all content: hero, flight overlay (data-layer cards and tags),
-                landing card, readable page
-style.css       theme tokens, layout, overlay and spine styles (rem-based)
-main.js         three.js scene, layer layout, camera keyframes, overlay
-                projection, pulses, spine behaviour
-vendor/         three.module.js and three.core.js (0.173)
-resume.pdf      compiled from the LaTeX résumé
+index.html   all the content: hero, flight cards, landing card, readable page
+style.css    colours, layout, responsive rules
+main.js      3D scene, camera path, card placement, pulses, spine
+vendor/      three.js
+resume.pdf   my résumé
 ```
 
-Key knobs in `main.js`:
+## ▶️ Run it locally
 
-- `LAYERS` — z position, ring radius, node size and colour per chapter, and
-  which earlier layer feeds it (`link`).
-- `KEYS` — camera keyframes `[p, z, y]`; equal `z` on two rows is a hold.
-- `PHASES` — HUD chapter labels by progress.
-- `CFG` — node counts, field extent, link distance.
-
-## Running locally
-
-The page uses ES modules, so it must be served over HTTP; opening
-`index.html` directly from disk will show only the text.
+The page uses JavaScript modules, so it needs a tiny web server. Opening
+`index.html` directly from disk will show only text.
 
 ```bash
 python -m http.server 5173
 ```
 
-Then open http://localhost:5173. Any static server works (`npx serve`,
-VS Code Live Server, and so on).
+Then open http://localhost:5173 in your browser. Any static server works.
 
-## Testing
+## ✅ How to check it works
 
-There is no test suite; the site is checked by looking at it. A useful
-checklist after a change:
+There's no automated test suite; it's a visual project, so you look at it.
+Quick checklist after a change:
 
-1. Open the page in a desktop browser and scroll the whole flight slowly. Each
-   chapter title should appear, hold, and hand over to the next without an empty
-   stretch or overlapping cards.
-2. Jump to a chapter from the console to inspect one spot:
+1. 🖱️ Scroll the whole flight slowly. Every chapter title should appear, pause,
+   and hand over to the next without an empty stretch or overlapping cards.
+2. 🎯 Jump straight to a chapter from the browser console:
    ```js
    const d = document.querySelector('[data-dive]');
    const goP = p => scrollTo({ top: d.offsetTop + p * (d.offsetHeight - innerHeight) });
-   goP(0.185); // education   goP(0.315); // hidden 1   goP(0.425); // hidden 2
-   goP(0.55);  // experience  goP(0.85);  // projects   goP(1);     // name card
+   goP(0.185); // education
+   goP(0.315); // hidden layer 1
+   goP(0.425); // hidden layer 2
+   goP(0.55);  // experience
+   goP(0.85);  // projects
+   goP(1);     // name card
    ```
-3. Click "Skip intro": it should land on the name card, not past it.
-4. Scroll the readable page to the bottom: the Contact node on the spine should
-   light up.
-5. Resize to a phone width (or use device emulation): cards stack in a column,
-   titles stay below the nav, nothing overflows horizontally.
-6. Check the console: no errors (a missing favicon 404 is expected until one is
-   added).
-7. Verify every link on the cards and in the readable page opens; links left as
-   `href=""` render struck through on purpose until they are filled in.
+3. ⏭️ Click **Skip intro** — it should land on the name card.
+4. ⬇️ Scroll the readable page to the very bottom — the Contact node on the
+   spine should light up.
+5. 📱 Shrink the window to phone width — cards stack, nothing overflows.
+6. 🐞 Open the console — no errors (a missing favicon 404 is fine for now).
+7. 🔗 Click every link. Links that are still `href=""` show as struck-through
+   on purpose until they're filled in.
 
-## Customising
+## ✏️ Changing things
 
-- Text, links and card order: edit `index.html`. Skills are `<span class="tag"
-  data-layer="1|2">`; experience cards are `<article class="card"
-  data-layer="t">` and read oldest to newest along the curve; projects are
-  `data-layer="e"`.
-- Chapter pacing: edit `KEYS` in `main.js`.
-- Colours: the tokens at the top of `style.css` (`--cyan`, `--violet`,
-  `--orange`, `--bg`).
-- Résumé: replace `resume.pdf`.
+- **Text and links:** edit `index.html`. Skills are
+  `<span class="tag" data-layer="1">` or `"2"`. Experience cards are
+  `<article class="card" data-layer="t">`, oldest first. Projects are
+  `data-layer="e"`. Add or remove as many as you like; the layout adapts.
+- **How long each layer pauses:** the `KEYS` table in `main.js`. Two rows with
+  the same `z` are a pause.
+- **Colours:** the variables at the top of `style.css`.
+- **Résumé:** replace `resume.pdf`.
 
-## Deployment
+## 🚀 Deploy
 
-Static files, no build. On Vercel: import the repository, leave Build Command
-and Output Directory empty, deploy, then add the domain under Settings →
-Domains. Every push to `main` redeploys.
+It's just static files. On Vercel: import the repo, leave *Build Command* and
+*Output Directory* empty, deploy, then add your domain under *Settings →
+Domains*. Every push to `main` redeploys automatically.
 
-## Credits
+## 🙏 Credits
 
-Inspired by the scroll-driven black-hole flight on
-[samuelpt.com](https://www.samuelpt.com/), rebuilt from scratch around a
-neural-network story. Built with three.js.
+Inspired by the scroll-through-a-black-hole flight on
+[samuelpt.com](https://www.samuelpt.com/). Rebuilt from scratch around a
+neural-network story. Made with three.js.
