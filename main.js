@@ -305,25 +305,33 @@ if (renderer) {
   };
 
   const v = new THREE.Vector3(), clock = new THREE.Clock();
-  let lastP = -1, lastZ = KEYS[0][1], fov = 60, elapsed = 0, spd = 0;
+  let lastP = -1, pS = -1, lastZ = KEYS[0][1], fov = 60, elapsed = 0, spd = 0; // pS: eased scroll progress the camera follows
   const frame = () => {
     requestAnimationFrame(frame);
     const top = dive.offsetTop, h = dive.offsetHeight - innerHeight;
-    const p = clamp((scrollY - top) / Math.max(1, h), 0, 1);
+    const target = clamp((scrollY - top) / Math.max(1, h), 0, 1);
+    const dt = Math.min(clock.getDelta(), 0.05);
+    // the camera chases the scroll position instead of sitting on it: a wheel tick stops dead, and a
+    // dead stop in 3D is what made people queasy. EASE is the catch-up rate per second (9 = settles
+    // in about a third of a second); raise it for a tighter feel, lower it for a softer one.
+    const EASE = 9;
+    pS = reduced || pS < 0 ? target : pS + (target - pS) * (1 - Math.exp(-dt * EASE));
+    if (Math.abs(target - pS) < 1e-5) pS = target;
+    const p = pS;
     if (p !== lastP) {   // before the idle return, so a page loaded past the intro still gets --p = 1
       lastP = p; document.documentElement.style.setProperty('--p', p.toFixed(4));
       outro.classList.toggle('on', p > 0.95); // landing card becomes clickable once it is readable
       skip.classList.toggle('on', p < 0.7);  // skip button is clickable only while visible
     }
-    if (scrollY > top + dive.offsetHeight) return; // intro scrolled away: idle
-    const dt = Math.min(clock.getDelta(), 0.05); elapsed += dt;
+    if (scrollY > top + dive.offsetHeight && p === target) return; // intro scrolled away and settled: idle
+    elapsed += dt;
 
     // camera: keyframed z/y, mouse parallax, fov widens with speed
     const { z, y } = camAt(p);
     sm.x += (mouse.x - sm.x) * 0.05; sm.y += (mouse.y - sm.y) * 0.05;
     spd = lerp(spd, Math.abs(z - lastZ) / Math.max(dt, 1e-3), 0.12); lastZ = z; // smoothed camera speed
     const speed = spd;
-    fov = lerp(fov, 60 + 10 * clamp(speed / 150, 0, 1), 0.1);
+    fov = lerp(fov, 60 + 3 * clamp(speed / 150, 0, 1), 0.05); // small, slow kick: a view that keeps narrowing after you stop reads as a dolly zoom
     // training chapter: sit a little right of the loss curve and look at a point on it ~50 units ahead,
     // so the curve stays in frame on the left for the whole descent instead of dropping out below
     const w = smooth(((T.z0 + 40) - z) / 60) * (1 - smooth(((T.z1 + 40) - z) / 40)); // out by z1-0, before the output ring fades in
