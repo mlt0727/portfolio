@@ -100,6 +100,13 @@ a[href=""] { color: var(--faint); pointer-events: none; text-decoration: line-th
 }
 .tag.on { pointer-events: auto; }
 .tag:hover { border-color: var(--cyan); background: rgba(79, 227, 255, 0.14); box-shadow: 0 0 34px rgba(79, 227, 255, 0.6); }
+/* small brand mark before a skill (tags in the flight, chips on the readable page): the SVG in icons/
+   is used as a mask, so it takes the text colour and stays quiet */
+.ico::before {
+  content: ""; display: inline-block; width: 0.95em; height: 0.95em; margin-right: 0.45em; vertical-align: -0.13em;
+  background: currentColor; opacity: 0.7;
+  -webkit-mask: var(--i) center / contain no-repeat; mask: var(--i) center / contain no-repeat;
+}
 .layer-title { z-index: 2; margin: 0; font-size: clamp(1.4rem, 2.6vw, 2.6rem); font-weight: 800; letter-spacing: -0.01em; text-align: center; white-space: nowrap; text-shadow: 0 0 24px rgba(79, 227, 255, 0.35); }
 .layer-title .mono { display: block; color: var(--cyan); font-weight: 500; margin-bottom: 0.25rem; }
 @media (max-width: 720px) {
